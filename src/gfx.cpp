@@ -28,6 +28,11 @@
 
 #include "safeguards.h"
 
+#ifdef __MORPHOS__
+#undef Allocate
+#endif
+
+
 byte _dirkeys;        ///< 1 = left, 2 = up, 4 = right, 8 = down
 bool _fullscreen;
 byte _support8bpp;

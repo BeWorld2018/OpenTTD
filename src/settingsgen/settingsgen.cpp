@@ -21,6 +21,13 @@
 #include <sys/stat.h>
 #endif
 
+#ifdef __MORPHOS__
+#ifdef stderr
+#undef stderr
+#endif
+#define stderr stdout
+#endif /* __MORPHOS__ */
+
 #include "../safeguards.h"
 
 /**

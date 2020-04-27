@@ -24,8 +24,10 @@
 #endif
 
 #if defined(WITH_LIBLZMA)
+#define UINT32_C(v) (v ## UL)
 #include <lzma.h>
 #endif
+
 
 #include "safeguards.h"
 

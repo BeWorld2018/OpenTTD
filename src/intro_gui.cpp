@@ -291,6 +291,8 @@ void AskExitGame()
 		SetDParam(0, STR_OSNAME_OSX);
 #elif defined(__HAIKU__)
 		SetDParam(0, STR_OSNAME_HAIKU);
+#elif defined(__MORPHOS__)
+		SetDParam(0, STR_OSNAME_MORPHOS);
 #elif defined(__OS2__)
 		SetDParam(0, STR_OSNAME_OS2);
 #elif defined(SUNOS)

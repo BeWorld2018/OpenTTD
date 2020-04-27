@@ -72,6 +72,11 @@
 
 #include "safeguards.h"
 
+#ifdef __MORPHOS__
+	#include <proto/exec.h>
+	#include <proto/openurl.h>
+#endif
+
 void CallLandscapeTick();
 void IncreaseDate();
 void DoPaletteAnimations();
@@ -170,7 +175,7 @@ static void ShowHelp()
 		"  -P password         = Password to join company\n"
 		"  -D [ip][:port]      = Start dedicated server\n"
 		"  -l ip[:port]        = Redirect DEBUG()\n"
-#if !defined(_WIN32)
+#if !defined(__MORPHOS__) && !defined(_WIN32)
 		"  -f                  = Fork into the background (dedicated only)\n"
 #endif
 		"  -I graphics_set     = Force the graphics set (see below)\n"
@@ -284,11 +289,9 @@ static void ParseResolution(Dimension *res, const char *s)
  */
 static void ShutdownGame()
 {
+	
 	IConsoleFree();
 
-	if (_network_available) NetworkShutDown(); // Shut down the network and close any open connections
-
-	DriverFactoryBase::ShutdownDrivers();
 
 	UnInitWindowSystem();
 
@@ -303,14 +306,19 @@ static void ShutdownGame()
 
 	LinkGraphSchedule::Clear();
 	PoolBase::Clean(PT_ALL);
-
+		
 	/* No NewGRFs were loaded when it was still bootstrapping. */
 	if (_game_mode != GM_BOOTSTRAP) ResetNewGRFData();
-
+	
 	/* Close all and any open filehandles */
 	FioCloseAll();
 
 	UninitFreeType();
+	
+		if (_network_available) NetworkShutDown(); // Shut down the network and close any open connections
+
+	DriverFactoryBase::ShutdownDrivers();
+	
 }
 
 /**
@@ -381,8 +389,17 @@ void OpenBrowser(const char *url)
 	/* Make sure we only accept urls that are sure to open a browser. */
 	if (strstr(url, "http://") != url && strstr(url, "https://") != url) return;
 
+	#ifndef __MORPHOS__
 	extern void OSOpenBrowser(const char *url);
 	OSOpenBrowser(url);
+	#else
+	struct Library *OpenURLBase = OpenLibrary("openurl.library",0);
+	static const struct TagItem URLTags[] = {{TAG_DONE, (ULONG) NULL}};
+	if (OpenURLBase){
+		URL_OpenA((STRPTR)url, (struct TagItem*) URLTags);
+		CloseLibrary(OpenURLBase);
+	}
+	#endif
 }
 
 /** Callback structure of statements to be executed after the NewGRF scan. */
@@ -490,7 +507,7 @@ struct AfterNewGRFScan : NewGRFScanCallback {
 	}
 };
 
-#if defined(UNIX)
+#if defined(UNIX) && !defined(__MORPHOS__)
 extern void DedicatedFork();
 #endif
 
@@ -508,7 +525,7 @@ static const OptionData _options[] = {
 	 GETOPT_SHORT_VALUE('l'),
 	 GETOPT_SHORT_VALUE('p'),
 	 GETOPT_SHORT_VALUE('P'),
-#if !defined(_WIN32)
+#if !defined(__MORPHOS__) && !defined(_WIN32)
 	 GETOPT_SHORT_NOVAL('f'),
 #endif
 	 GETOPT_SHORT_VALUE('r'),
@@ -696,7 +713,7 @@ int openttd_main(int argc, char *argv[])
 	if (dedicated) DEBUG(net, 0, "Starting dedicated version %s", _openttd_revision);
 	if (_dedicated_forks && !dedicated) _dedicated_forks = false;
 
-#if defined(UNIX)
+#if defined(UNIX) && !defined(__MORPHOS__)
 	/* We must fork here, or we'll end up without some resources we need (like sockets) */
 	if (_dedicated_forks) DedicatedFork();
 #endif
@@ -870,6 +887,7 @@ int openttd_main(int argc, char *argv[])
 
 	/* Reset windowing system, stop drivers, free used memory, ... */
 	ShutdownGame();
+		DEBUG(net, 3, " ShutdownGame = OK");
 	goto exit_normal;
 
 exit_noshutdown:
@@ -886,23 +904,32 @@ exit_bootstrap:
 	free(sounddriver);
 
 exit_normal:
+	DEBUG(net, 3, " ShutdownGame = BaseGraphics");
 	free(BaseGraphics::ini_set);
+		DEBUG(net, 3, " ShutdownGame = BaseSounds");
 	free(BaseSounds::ini_set);
+		DEBUG(net, 3, " ShutdownGame = BaseMusic");
 	free(BaseMusic::ini_set);
-
+	
+	DEBUG(net, 3, " ShutdownGame = _ini_musicdriver");
 	free(_ini_musicdriver);
+		DEBUG(net, 3, " ShutdownGame = _ini_sounddriver");
 	free(_ini_sounddriver);
+		DEBUG(net, 3, " ShutdownGame = _ini_videodriver");
 	free(_ini_videodriver);
+		DEBUG(net, 3, " ShutdownGame = _ini_blitter");
 	free(_ini_blitter);
+	
 
 	delete scanner;
-
+	DEBUG(net, 3, " ShutdownGame = _log_fd");
 	extern FILE *_log_fd;
 	if (_log_fd != nullptr) {
 		fclose(_log_fd);
 	}
-
-	return ret;
+	DEBUG(net, 3, " ShutdownGame = gameover");
+	return EXIT_SUCCESS;
+	//return ret;
 }
 
 void HandleExitGameRequest()

@@ -9,7 +9,9 @@
 
 #ifndef ALLOC_TYPE_HPP
 #define ALLOC_TYPE_HPP
-
+#ifdef __MORPHOS__
+#undef Allocate
+#endif
 #include "alloc_func.hpp"
 
 /**

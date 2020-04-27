@@ -13,7 +13,7 @@
 #include "../../date_func.h"
 #include "../../debug.h"
 #include "udp.h"
-
+#undef send
 #include "../../safeguards.h"
 
 /**
@@ -31,7 +31,9 @@ NetworkUDPSocketHandler::NetworkUDPSocketHandler(NetworkAddressList *bind)
 		 * resolving it we need to add an address for each of
 		 * the address families we support. */
 		this->bind.emplace_back(nullptr, 0, AF_INET);
+		#ifndef __MORPHOS__
 		this->bind.emplace_back(nullptr, 0, AF_INET6);
+		#endif
 	}
 }
 
@@ -86,7 +88,11 @@ void NetworkUDPSocketHandler::SendPacket(Packet *p, NetworkAddress *recv, bool a
 		NetworkAddress send(*recv);
 
 		/* Not the same type */
+		#ifdef __MORPHOS__
+		if (!send.IsFamily(s.first.GetAddress()->sa_family)) continue;
+		#else
 		if (!send.IsFamily(s.first.GetAddress()->ss_family)) continue;
+		#endif
 
 		p->PrepareToSend();
 

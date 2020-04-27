@@ -10,6 +10,10 @@
 #ifndef SMALLMAP_TYPE_HPP
 #define SMALLMAP_TYPE_HPP
 
+#ifdef __MORPHOS__
+#undef Insert
+#endif
+
 #include "smallvec_type.hpp"
 
 /**

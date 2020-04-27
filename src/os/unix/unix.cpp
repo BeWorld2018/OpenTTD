@@ -46,6 +46,14 @@
 #include <sys/sysctl.h>
 #endif
 
+#ifdef __MORPHOS__
+#include <exec/types.h>
+unsigned long __stack = 2000000;
+//ULONG __stack = (1024*1024)*2;
+#undef SIG_IGN
+#define SIG_IGN (void (*)(int))1
+#endif
+
 #ifndef NO_THREADS
 #include <pthread.h>
 #endif
@@ -61,9 +69,13 @@
 
 #include "../../safeguards.h"
 
-bool FiosIsRoot(const char *path)
-{
+bool FiosIsRoot(const char *path) {
+	#ifdef __MORPHOS__
+	const char *s =strchr(path, ':');
+	return s != NULL && s[1] == '\0';
+	#else
 	return path[1] == '\0';
+	#endif
 }
 
 void FiosGetDrives(FileList &file_list)
@@ -94,8 +106,15 @@ bool FiosIsValidFile(const char *path, const struct dirent *ent, struct stat *sb
 {
 	char filename[MAX_PATH];
 	int res;
+	#ifdef __MORPHOS__
+	if (FiosIsRoot(path))
+	{
+		res = seprintf(filename, lastof(filename), "%s:%s", path, ent->d_name);
+	}else
+	#else
 	assert(path[strlen(path) - 1] == PATHSEPCHAR);
 	if (strlen(path) > 2) assert(path[strlen(path) - 2] != PATHSEPCHAR);
+	#endif
 	res = seprintf(filename, lastof(filename), "%s%s", path, ent->d_name);
 
 	/* Could we fully concatenate the path and filename? */
@@ -288,7 +307,7 @@ bool GetClipboardContents(char *buffer, const char *last)
 #endif
 
 
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__MORPHOS__)
 void OSOpenBrowser(const char *url)
 {
 	pid_t child_pid = fork();

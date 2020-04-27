@@ -10,9 +10,15 @@
 #ifndef LINKGRAPHJOB_BASE_H
 #define LINKGRAPHJOB_BASE_H
 
+
 #include "linkgraph.h"
 #include "linkgraphjob.h"
 #include "linkgraphschedule.h"
+
+
+#ifdef __MORPHOS__
+#undef Node
+#endif
 
 typedef LinkGraphJob::Node Node;
 typedef LinkGraphJob::Edge Edge;

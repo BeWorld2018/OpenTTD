@@ -411,7 +411,16 @@ static FILE *FioFOpenFileSp(const char *filename, const char *mode, Searchpath s
 	if (subdir == NO_DIRECTORY) {
 		strecpy(buf, filename, lastof(buf));
 	} else {
+		#ifdef __MORPHOS__
+		// Patch
+		if (strrchr(filename, ':') != nullptr) {
+			seprintf(buf, lastof(buf), "%s", filename);
+		}else{
+		#else
+			{
+		#endif
 		seprintf(buf, lastof(buf), "%s%s%s", _searchpaths[sp], _subdirs[subdir], filename);
+		}
 	}
 
 #if defined(_WIN32)

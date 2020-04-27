@@ -12,7 +12,7 @@
 char *_log_file = nullptr; ///< File to reroute output of a forked OpenTTD to
 FILE *_log_fd   = nullptr; ///< File to reroute output of a forked OpenTTD to
 
-#if defined(UNIX)
+#if defined(UNIX) && !defined(__MORPHOS__)
 
 #include <unistd.h>
 

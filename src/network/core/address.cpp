@@ -21,7 +21,11 @@
  */
 const char *NetworkAddress::GetHostname()
 {
+	#ifndef __MORPHOS__
 	if (StrEmpty(this->hostname) && this->address.ss_family != AF_UNSPEC) {
+		#else
+		if (StrEmpty(this->hostname) && this->address.sa_family != AF_UNSPEC) {	
+		#endif
 		assert(this->address_length != 0);
 		getnameinfo((struct sockaddr *)&this->address, this->address_length, this->hostname, sizeof(this->hostname), nullptr, 0, NI_NUMERICHOST);
 	}
@@ -34,14 +38,19 @@ const char *NetworkAddress::GetHostname()
  */
 uint16 NetworkAddress::GetPort() const
 {
+		#ifndef __MORPHOS__
 	switch (this->address.ss_family) {
+	#else
+	switch (this->address.sa_family) {
+			#endif		
 		case AF_UNSPEC:
 		case AF_INET:
-			return ntohs(((const struct sockaddr_in *)&this->address)->sin_port);
 
+			return ntohs(((const struct sockaddr_in *)&this->address)->sin_port);
+	#ifndef __MORPHOS__
 		case AF_INET6:
 			return ntohs(((const struct sockaddr_in6 *)&this->address)->sin6_port);
-
+#endif
 		default:
 			NOT_REACHED();
 	}
@@ -53,16 +62,20 @@ uint16 NetworkAddress::GetPort() const
  */
 void NetworkAddress::SetPort(uint16 port)
 {
+	#ifndef __MORPHOS__
 	switch (this->address.ss_family) {
+		#else
+		switch (this->address.sa_family) {	
+		#endif
 		case AF_UNSPEC:
 		case AF_INET:
 			((struct sockaddr_in*)&this->address)->sin_port = htons(port);
 			break;
-
+#ifndef __MORPHOS__
 		case AF_INET6:
 			((struct sockaddr_in6*)&this->address)->sin6_port = htons(port);
 			break;
-
+#endif
 		default:
 			NOT_REACHED();
 	}
@@ -76,16 +89,26 @@ void NetworkAddress::SetPort(uint16 port)
  */
 void NetworkAddress::GetAddressAsString(char *buffer, const char *last, bool with_family)
 {
+		#ifndef __MORPHOS__
 	if (this->GetAddress()->ss_family == AF_INET6) buffer = strecpy(buffer, "[", last);
+		#endif
 	buffer = strecpy(buffer, this->GetHostname(), last);
+		#ifndef __MORPHOS__
 	if (this->GetAddress()->ss_family == AF_INET6) buffer = strecpy(buffer, "]", last);
+	#endif
 	buffer += seprintf(buffer, last, ":%d", this->GetPort());
 
 	if (with_family) {
 		char family;
+			#ifndef __MORPHOS__
 		switch (this->address.ss_family) {
+			#else
+			switch (this->address.sa_family) {		
+			#endif
 			case AF_INET:  family = '4'; break;
+				#ifndef __MORPHOS__
 			case AF_INET6: family = '6'; break;
+				#endif
 			default:       family = '?'; break;
 		}
 		seprintf(buffer, last, " (IPv%c)", family);
@@ -129,7 +152,11 @@ const sockaddr_storage *NetworkAddress::GetAddress()
 		 * bothered to implement the specifications and allow '0' as value
 		 * that means "don't care whether it is SOCK_STREAM or SOCK_DGRAM".
 		 */
+		#ifndef __MORPHOS__
 		this->Resolve(this->address.ss_family, SOCK_STREAM, AI_ADDRCONFIG, nullptr, ResolveLoopProc);
+		#else
+		this->Resolve(this->address.sa_family, SOCK_STREAM, AI_ADDRCONFIG, nullptr, ResolveLoopProc);
+		#endif
 		this->resolved = true;
 	}
 	return &this->address;
@@ -145,7 +172,11 @@ bool NetworkAddress::IsFamily(int family)
 	if (!this->IsResolved()) {
 		this->Resolve(family, SOCK_STREAM, AI_ADDRCONFIG, nullptr, ResolveLoopProc);
 	}
-	return this->address.ss_family == family;
+				#ifndef __MORPHOS__
+		return this->address.ss_family == family;
+	#else
+	return this->address.sa_family == family;
+	#endif
 }
 
 /**
@@ -158,9 +189,11 @@ bool NetworkAddress::IsInNetmask(const char *netmask)
 {
 	/* Resolve it if we didn't do it already */
 	if (!this->IsResolved()) this->GetAddress();
-
+	#ifndef __MORPHOS__
 	int cidr = this->address.ss_family == AF_INET ? 32 : 128;
-
+	#else
+	int cidr = this->address.sa_family == AF_INET ? 32 : 128;	
+	#endif
 	NetworkAddress mask_address;
 
 	/* Check for CIDR separator */
@@ -173,26 +206,38 @@ bool NetworkAddress::IsInNetmask(const char *netmask)
 
 		/* Remove the / so that NetworkAddress works on the IP portion */
 		std::string ip_str(netmask, chr_cidr - netmask);
+			#ifndef __MORPHOS__
 		mask_address = NetworkAddress(ip_str.c_str(), 0, this->address.ss_family);
+		#else
+		mask_address = NetworkAddress(ip_str.c_str(), 0, this->address.sa_family);
+		#endif
 	} else {
+			#ifndef __MORPHOS__
 		mask_address = NetworkAddress(netmask, 0, this->address.ss_family);
+		#else
+		mask_address = NetworkAddress(netmask, 0, this->address.sa_family);
+		#endif
 	}
 
 	if (mask_address.GetAddressLength() == 0) return false;
 
 	uint32 *ip;
 	uint32 *mask;
+	#ifndef __MORPHOS__
 	switch (this->address.ss_family) {
+		#else
+		switch (this->address.sa_family) {	
+		#endif
 		case AF_INET:
 			ip = (uint32*)&((struct sockaddr_in*)&this->address)->sin_addr.s_addr;
 			mask = (uint32*)&((struct sockaddr_in*)&mask_address.address)->sin_addr.s_addr;
 			break;
-
+	#ifndef __MORPHOS__
 		case AF_INET6:
 			ip = (uint32*)&((struct sockaddr_in6*)&this->address)->sin6_addr;
 			mask = (uint32*)&((struct sockaddr_in6*)&mask_address.address)->sin6_addr;
 			break;
-
+#endif
 		default:
 			NOT_REACHED();
 	}
@@ -235,7 +280,11 @@ SOCKET NetworkAddress::Resolve(int family, int socktype, int flags, SocketList *
 	 * we want to bind to 'all' IPs. */
 	if (StrEmpty(this->hostname) && this->address_length == 0 && this->GetPort() == 0) {
 		reset_hostname = true;
+		#ifndef __MORPHOS__
 		int fam = this->address.ss_family;
+		#else
+		int fam = this->address.sa_family;
+		#endif
 		if (fam == AF_UNSPEC) fam = family;
 		strecpy(this->hostname, fam == AF_INET ? "0.0.0.0" : "::", lastof(this->hostname));
 	}
@@ -350,13 +399,14 @@ static SOCKET ListenLoopProc(addrinfo *runp)
 	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on)) == -1) {
 		DEBUG(net, 3, "[%s] could not set reusable %s sockets for port %s: %s", type, family, address, strerror(errno));
 	}
-
+	#ifndef __MORPHOS__
 #ifndef __OS2__
 	if (runp->ai_family == AF_INET6 &&
 			setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&on, sizeof(on)) == -1) {
 		DEBUG(net, 3, "[%s] could not disable IPv4 over IPv6 on port %s: %s", type, address, strerror(errno));
 	}
 #endif
+	#endif
 
 	if (bind(sock, runp->ai_addr, (int)runp->ai_addrlen) != 0) {
 		DEBUG(net, 1, "[%s] could not bind on %s port %s: %s", type, family, address, strerror(errno));
@@ -389,10 +439,16 @@ void NetworkAddress::Listen(int socktype, SocketList *sockets)
 	/* Setting both hostname to nullptr and port to 0 is not allowed.
 	 * As port 0 means bind to any port, the other must mean that
 	 * we want to bind to 'all' IPs. */
+			#ifndef __MORPHOS__
 	if (this->address_length == 0 && this->address.ss_family == AF_UNSPEC &&
+		#else
+		if (this->address_length == 0 && this->address.sa_family == AF_UNSPEC &&
+	#endif
 			StrEmpty(this->hostname) && this->GetPort() == 0) {
 		this->Resolve(AF_INET,  socktype, AI_ADDRCONFIG | AI_PASSIVE, sockets, ListenLoopProc);
+					#ifndef __MORPHOS__
 		this->Resolve(AF_INET6, socktype, AI_ADDRCONFIG | AI_PASSIVE, sockets, ListenLoopProc);
+				#endif
 	} else {
 		this->Resolve(AF_UNSPEC, socktype, AI_ADDRCONFIG | AI_PASSIVE, sockets, ListenLoopProc);
 	}
@@ -424,7 +480,9 @@ void NetworkAddress::Listen(int socktype, SocketList *sockets)
 	switch (family) {
 		case AF_UNSPEC: return "either IPv4 or IPv6";
 		case AF_INET:   return "IPv4";
+			#ifndef __MORPHOS__
 		case AF_INET6:  return "IPv6";
+		#endif
 		default:        return "unsupported";
 	}
 }

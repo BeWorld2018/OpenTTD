@@ -460,6 +460,7 @@ static const char * const _credits[] = {
 	"  Stefan Mei\xC3\x9Fner (sign_de) - For his work on the console",
 	"  Mike Ragsdale - OpenTTD installer",
 	"  Christian Rosentreter (tokai) - MorphOS / AmigaOS port",
+	"  BeWorld - MorphOS update port",
 	"  Richard Kempton (richK) - additional airports, initial TGP implementation",
 	"",
 	"  Alberto Demichelis - Squirrel scripting language \xC2\xA9 2003-2008",

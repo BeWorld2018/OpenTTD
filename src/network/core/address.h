@@ -85,7 +85,11 @@ public:
 		if (tmp != nullptr) *tmp = '\0';
 
 		memset(&this->address, 0, sizeof(this->address));
+		#ifdef __MORPHOS__
+		this->address.sa_family = family;
+		#else
 		this->address.ss_family = family;
+		#endif
 		this->SetPort(port);
 	}
 
@@ -128,7 +132,11 @@ public:
 	int CompareTo(NetworkAddress &address)
 	{
 		int r = this->GetAddressLength() - address.GetAddressLength();
+		#ifdef __MORPHOS__
+		if (r == 0) r = this->address.sa_family - address.address.sa_family;
+		#else
 		if (r == 0) r = this->address.ss_family - address.address.ss_family;
+		#endif
 		if (r == 0) r = memcmp(&this->address, &address.address, this->address_length);
 		if (r == 0) r = this->GetPort() - address.GetPort();
 		return r;

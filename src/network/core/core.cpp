@@ -16,6 +16,8 @@
 
 #include "../../safeguards.h"
 
+#include <proto/exec.h>
+extern struct Library *SocketBase = NULL;
 
 /**
  * Initializes the network core (as that is needed for some platforms
@@ -23,6 +25,12 @@
  */
 bool NetworkCoreInitialize()
 {
+	#if defined(__MORPHOS__)
+	SocketBase = OpenLibrary("bsdsocket.library",4);
+	if (SocketBase == NULL) {
+		return false;
+	}
+	#endif
 /* Let's load the network in windows */
 #ifdef _WIN32
 	{
@@ -43,6 +51,11 @@ bool NetworkCoreInitialize()
  */
 void NetworkCoreShutdown()
 {
+#if defined(__MORPHOS__)
+	if (SocketBase != NULL) {
+		CloseLibrary(SocketBase);
+	}
+#endif
 #if defined(_WIN32)
 	WSACleanup();
 #endif

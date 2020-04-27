@@ -44,7 +44,7 @@
 #ifdef WITH_PNG
 	/* pngconf.h, included by png.h doesn't like something in the
 	 * freetype headers. As such it's not alphabetically sorted. */
-#	include <png.h>
+#	include <png162.h>
 #endif /* WITH_PNG */
 #ifdef WITH_FREETYPE
 #	include <ft2build.h>

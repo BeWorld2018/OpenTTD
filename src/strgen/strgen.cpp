@@ -28,6 +28,12 @@
 #include <direct.h>
 #endif /* _WIN32 || __WATCOMC__ */
 
+
+#ifdef __MORPHOS__
+#undef stderr
+#define stderr stdout
+#endif
+
 #include "../table/strgen_tables.h"
 
 #include "../safeguards.h"

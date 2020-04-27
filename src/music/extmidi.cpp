@@ -7,6 +7,7 @@
 
 /** @file extmidi.cpp Playing music via an external player. */
 
+#ifndef __MORPHOS__
 #include "../stdafx.h"
 #include "../debug.h"
 #include "../string_func.h"
@@ -160,3 +161,4 @@ void MusicDriver_ExtMidi::DoStop()
 	waitpid(this->pid, nullptr, 0);
 	this->pid = -1;
 }
+#endif

@@ -53,6 +53,7 @@ static inline void CheckAllocationConstraints(size_t num_elements)
  * @param num_elements the number of elements to allocate of the given type.
  * @return nullptr when num_elements == 0, non-nullptr otherwise.
  */
+
 template <typename T>
 static inline T *MallocT(size_t num_elements)
 {

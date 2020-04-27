@@ -9,10 +9,14 @@
 
 #ifndef SCRIPT_GOAL_HPP
 #define SCRIPT_GOAL_HPP
-
+#ifdef __MORPHOS__
+#undef Remove
+#endif
 #include "script_client.hpp"
 #include "script_company.hpp"
 #include "../../goal_type.h"
+
+
 
 /**
  * Class that handles some goal related functions.

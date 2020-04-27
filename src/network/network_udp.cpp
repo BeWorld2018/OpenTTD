@@ -101,8 +101,12 @@ public:
 void MasterNetworkUDPSocketHandler::Receive_MASTER_ACK_REGISTER(Packet *p, NetworkAddress *client_addr)
 {
 	_network_advertise_retries = 0;
+	#ifdef __MORPHOS__
+	DEBUG(net, 2, "[udp] advertising on master server successful (%s)", NetworkAddress::AddressFamilyAsString(client_addr->GetAddress()->sa_family));	
+	#else
 	DEBUG(net, 2, "[udp] advertising on master server successful (%s)", NetworkAddress::AddressFamilyAsString(client_addr->GetAddress()->ss_family));
-
+	#endif
+	
 	/* We are advertised, but we don't want to! */
 	if (!_settings_client.network.server_advertise) NetworkUDPRemoveAdvertise(false);
 }
@@ -110,7 +114,11 @@ void MasterNetworkUDPSocketHandler::Receive_MASTER_ACK_REGISTER(Packet *p, Netwo
 void MasterNetworkUDPSocketHandler::Receive_MASTER_SESSION_KEY(Packet *p, NetworkAddress *client_addr)
 {
 	_session_key = p->Recv_uint64();
+	#ifdef __MORPHOS__
+	DEBUG(net, 2, "[udp] received new session key from master server (%s)", NetworkAddress::AddressFamilyAsString(client_addr->GetAddress()->sa_family));	
+	#else
 	DEBUG(net, 2, "[udp] received new session key from master server (%s)", NetworkAddress::AddressFamilyAsString(client_addr->GetAddress()->ss_family));
+	#endif
 }
 
 ///*** Communication with clients (we are server) ***/
@@ -352,10 +360,11 @@ void ClientNetworkUDPSocketHandler::Receive_SERVER_RESPONSE(Packet *p, NetworkAd
 	if (item->info.hostname[0] == '\0') {
 		seprintf(item->info.hostname, lastof(item->info.hostname), "%s", client_addr->GetHostname());
 	}
-
+	#ifndef __MORPHOS__
 	if (client_addr->GetAddress()->ss_family == AF_INET6) {
 		strecat(item->info.server_name, " (IPv6)", lastof(item->info.server_name));
 	}
+	#endif
 
 	/* Check if we are allowed on this server based on the revision-match */
 	item->info.version_compatible = IsNetworkCompatibleVersion(item->info.server_revision);
@@ -382,15 +391,25 @@ void ClientNetworkUDPSocketHandler::Receive_MASTER_RESPONSE_LIST(Packet *p, Netw
 			memset(&addr_storage, 0, sizeof(addr_storage));
 
 			if (type == SLT_IPv4) {
+				#ifndef __MORPHOS__
 				addr_storage.ss_family = AF_INET;
+				#else
+				addr_storage.sa_family = AF_INET;
+				#endif
 				((sockaddr_in*)&addr_storage)->sin_addr.s_addr = TO_LE32(p->Recv_uint32());
+			#ifndef __MORPHOS__
 			} else {
 				assert(type == SLT_IPv6);
 				addr_storage.ss_family = AF_INET6;
 				byte *addr = (byte*)&((sockaddr_in6*)&addr_storage)->sin6_addr;
 				for (uint i = 0; i < sizeof(in6_addr); i++) *addr++ = p->Recv_uint8();
+			#endif
 			}
+				#ifndef __MORPHOS__
 			NetworkAddress addr(addr_storage, type == SLT_IPv4 ? sizeof(sockaddr_in) : sizeof(sockaddr_in6));
+			#else
+			NetworkAddress addr(addr_storage, type == SLT_IPv4 ? sizeof(sockaddr_in) : sizeof(sockaddr_in));
+			#endif
 			addr.SetPort(p->Recv_uint16());
 
 			/* Somehow we reached the end of the packet */

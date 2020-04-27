@@ -113,7 +113,11 @@ static void debug_print(const char *dbg, const char *buf)
 		seprintf(buf2, lastof(buf2), "%sdbg: [%s] %s\n", GetLogPrefix(), dbg, buf);
 		/* Sending out an error when this fails would be nice, however... the error
 		 * would have to be send over this failing socket which won't work. */
+		#ifdef __MORPHOS__
+		send(_debug_socket, (const char *)buf2, (int)strlen(buf2), 0);
+		#else
 		send(_debug_socket, buf2, (int)strlen(buf2), 0);
+		#endif
 		return;
 	}
 	if (strcmp(dbg, "desync") == 0) {

@@ -306,7 +306,11 @@ int NetworkHTTPSocketHandler::Receive()
 	}
 
 	tv.tv_sec = tv.tv_usec = 0; // don't block at all.
+#if !defined(__MORPHOS__) && !defined(__AMIGA__)
 	int n = select(FD_SETSIZE, &read_fd, nullptr, nullptr, &tv);
+#else
+	int n = WaitSelect(FD_SETSIZE, &read_fd, nullptr, nullptr, &tv, nullptr);
+#endif
 	if (n == -1) return;
 
 	for (auto iter = _http_connections.begin(); iter < _http_connections.end(); /* nothing */) {

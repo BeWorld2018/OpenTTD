@@ -44,19 +44,24 @@ typedef unsigned long in_addr_t;
 
 /* UNIX stuff */
 #if defined(UNIX) && !defined(__OS2__)
-#	if defined(OPENBSD) || defined(__NetBSD__)
+#	if defined(OPENBSD) || defined(__NetBSD__)  || defined(__MORPHOS__)
 #		define AI_ADDRCONFIG 0
 #	endif
 #	define SOCKET int
 #	define INVALID_SOCKET -1
-#	define ioctlsocket ioctl
-#	define closesocket close
-#	define GET_LAST_ERROR() (errno)
+#	if !defined(__MORPHOS__)
+#		define ioctlsocket ioctl
+#		define closesocket close
+#		define GET_LAST_ERROR() (errno)
+# 	endif
+
 /* Need this for FIONREAD on solaris */
 #	define BSD_COMP
 
 /* Includes needed for UNIX-like systems */
+#ifndef __MORPHOS__
 #	include <unistd.h>
+#endif
 #	include <sys/ioctl.h>
 #	include <sys/socket.h>
 #	include <netinet/in.h>
@@ -64,7 +69,7 @@ typedef unsigned long in_addr_t;
 #	include <arpa/inet.h>
 #	include <net/if.h>
 /* According to glibc/NEWS, <ifaddrs.h> appeared in glibc-2.3. */
-#	if !defined(__sgi__) && !defined(SUNOS) && !defined(__INNOTEK_LIBC__) \
+#	if !defined(__sgi__) && !defined(SUNOS) && !defined(__MORPHOS__) && !defined(__INNOTEK_LIBC__) \
 	   && !(defined(__GLIBC__) && (__GLIBC__ <= 2) && (__GLIBC_MINOR__ <= 2)) && !defined(__dietlibc__) && !defined(HPUX)
 /* If for any reason ifaddrs.h does not exist on your system, comment out
  *   the following two lines and an alternative way will be used to fetch
@@ -112,6 +117,8 @@ typedef unsigned long in_addr_t;
 
 #define IPV6_V6ONLY 27
 
+
+
 /*
  * IPv6 address
  */
@@ -140,6 +147,31 @@ typedef unsigned long in_addr_t;
 #endif /* __INNOTEK_LIBC__ */
 
 #endif /* OS/2 */
+
+#ifdef __MORPHOS__
+#undef Node
+#include <exec/types.h>
+//nclude <proto/exec.h>
+#include <proto/socket.h>
+#include "arpa/inet.h"
+#define UBYTE char
+#include <sys/filio.h>
+#include <sys/sockio.h>
+#include <netinet/in.h>
+#define closesocket(s) CloseSocket(s)
+#define GET_LAST_ERROR() errno
+#define ioctlsocket(s, request, status) IoctlSocket((LONG)s, (ULONG)request, (char*)status)
+#define ioctl ioctlsocket
+typedef unsigned int	int_addr_t;
+
+//#include <proto/exec.h>
+//extern struct Library *SocketBase = NULL;
+
+#define sockaddr_storage sockaddr
+#	include "../../3rdparty/mos/getaddrinfo.h"
+#	include "../../3rdparty/mos/getnameinfo.h"
+
+#endif
 
 /**
  * Try to set the socket into non-blocking mode.
@@ -171,6 +203,6 @@ static inline bool SetNoDelay(SOCKET d)
 
 /* Make sure these structures have the size we expect them to be */
 assert_compile(sizeof(in_addr)  ==  4); ///< IPv4 addresses should be 4 bytes.
-assert_compile(sizeof(in6_addr) == 16); ///< IPv6 addresses should be 16 bytes.
+//assert_compile(sizeof(in6_addr) == 16); ///< IPv6 addresses should be 16 bytes.
 
 #endif /* NETWORK_CORE_OS_ABSTRACTION_H */

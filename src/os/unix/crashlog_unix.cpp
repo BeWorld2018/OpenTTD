@@ -40,10 +40,10 @@ class CrashLogUnix : public CrashLog {
 
 	char *LogOSVersion(char *buffer, const char *last) const override
 	{
-		struct utsname name;
-		if (uname(&name) < 0) {
-			return buffer + seprintf(buffer, last, "Could not get OS version: %s\n", strerror(errno));
-		}
+		/*struct utsname name;
+		if (uname(&name) < 0) {*/
+			return buffer + seprintf(buffer, last, "Could not get MorphOS version\n");
+		/*}
 
 		return buffer + seprintf(buffer, last,
 				"Operating system:\n"
@@ -55,16 +55,16 @@ class CrashLogUnix : public CrashLog {
 				name.release,
 				name.version,
 				name.machine
-		);
+		);*/
 	}
 
 	char *LogError(char *buffer, const char *last, const char *message) const override
 	{
 		return buffer + seprintf(buffer, last,
-				"Crash reason:\n"
+				/*"Crash reason:\n"*/
 				" Signal:  %s (%d)\n"
 				" Message: %s\n\n",
-				strsignal(this->signum),
+				/*strsignal(this->signum),*/
 				this->signum,
 				message == nullptr ? "<none>" : message
 		);

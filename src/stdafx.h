@@ -29,7 +29,7 @@
  * We need INT64_MAX, which for most systems comes from stdint.h. However, MSVC
  * does not have stdint.h.
  * For OSX the inclusion is already done in osx_stdafx.h. */
-#if !defined(__APPLE__) && (!defined(_MSC_VER) || _MSC_VER >= 1600)
+#if !defined(__APPLE__) && (!defined(_MSC_VER) || _MSC_VER >= 1600) && !defined(__MORPHOS__)
 	#if defined(SUNOS)
 		/* SunOS/Solaris does not have stdint.h, but inttypes.h defines everything
 		 * stdint.h defines and we need. */
@@ -99,8 +99,13 @@
 	#define strcasecmp stricmp
 #endif
 
-#if defined(SUNOS) || defined(HPUX) || defined(__CYGWIN__)
+#if defined(SUNOS) || defined(HPUX) || defined(__CYGWIN__) 
 	#include <alloca.h>
+#endif
+
+#ifdef __MORPHOS__
+#include <alloca.h>
+//void *alloca(size_t size);
 #endif
 
 /* Stuff for GCC */
@@ -306,7 +311,7 @@
 typedef unsigned char byte;
 
 /* This is already defined in unix, but not in QNX Neutrino (6.x)*/
-#if (!defined(UNIX) && !defined(__HAIKU__)) || defined(__QNXNTO__)
+#if (!defined(UNIX) && !defined(__HAIKU__) && !defined(__MORPHOS__)) || defined(__QNXNTO__)
 	typedef unsigned int uint;
 #endif
 
@@ -441,6 +446,9 @@ void NORETURN CDECL error(const char *str, ...) WARN_FORMAT(1, 2);
 #if defined(OPENBSD)
 	/* OpenBSD uses strcasecmp(3) */
 	#define _stricmp strcasecmp
+#endif
+#if defined(__MORPHOS__)
+   #define _stricmp stricmp
 #endif
 
 #if defined(MAX_PATH)
