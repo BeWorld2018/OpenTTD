@@ -1,0 +1,62 @@
+TARGET = bin/OpenTTD
+
+LIBS =  -lSDL2  -L/usr/local/lib -noixemul -lc -lm  -lz_shared -lpng_shared -llzo2 -lfreetype -ltimidity
+CC = ppc-morphos-gcc-9
+CXX = ppc-morphos-g++-9
+STRIP = ppc-morphos-strip
+CXXFLAGS = -std=c++11 -D__MORPHOS_SHAREDLIBS -noixemul  -Wno-multichar -DMORPHOS -O0 -Wall -I/usr/local/include -I/usr/local/include/SDL2 \
+					-DWITH_LIBLZMA -DWITH_FREETYPE -DWITH_PNG -DUNIX -DWITH_SDL2  -DWITH_ZLIB   -DWITH_LZO  -DNO_THREADS \
+					-DGLOBAL_DATA_DIR=\"\"  -Isrc/3rdparty/squirrel/include -I./src -Isrc
+CFLAGS   = -noixemul  -D__MORPHOS_SHAREDLIBS  -Wall -Wno-strict-prototypes					
+	
+OBJS_C   := src/3rdparty/mos/getaddrinfo.o src/3rdparty/mos/getnameinfo.o 
+OBJS_CPP := 	src/music/libtimidity.o src/3rdparty/md5/md5.o src/3rdparty/squirrel/sqstdlib/sqstdaux.o src/3rdparty/squirrel/sqstdlib/sqstdmath.o src/3rdparty/squirrel/squirrel/sqapi.o src/3rdparty/squirrel/squirrel/sqbaselib.o src/3rdparty/squirrel/squirrel/sqclass.o \
+						src/3rdparty/squirrel/squirrel/sqcompiler.o src/3rdparty/squirrel/squirrel/sqdebug.o src/3rdparty/squirrel/squirrel/sqfuncstate.o src/3rdparty/squirrel/squirrel/sqlexer.o src/3rdparty/squirrel/squirrel/sqmem.o src/3rdparty/squirrel/squirrel/sqobject.o \
+						src/3rdparty/squirrel/squirrel/sqstate.o src/3rdparty/squirrel/squirrel/sqtable.o src/3rdparty/squirrel/squirrel/sqvm.o src/ai/ai_config.o src/ai/ai_core.o src/ai/ai_gui.o src/ai/ai_info.o src/ai/ai_instance.o src/ai/ai_scanner.o src/aircraft_cmd.o src/aircraft_gui.o \
+						src/airport.o src/airport_gui.o src/animated_tile.o src/articulated_vehicles.o src/autoreplace.o src/autoreplace_cmd.o src/autoreplace_gui.o src/base_consist.o src/blitter/32bpp_anim.o src/blitter/32bpp_base.o src/blitter/32bpp_optimized.o src/blitter/32bpp_simple.o \
+						src/blitter/8bpp_base.o src/blitter/8bpp_optimized.o src/blitter/8bpp_simple.o src/blitter/null.o src/bmp.o src/bootstrap_gui.o src/bridge_gui.o src/bridge_map.o src/build_vehicle_gui.o src/cargoaction.o src/cargomonitor.o src/cargopacket.o src/cargotype.o src/cheat.o src/cheat_gui.o \
+						src/clear_cmd.o src/command.o src/company_cmd.o src/company_gui.o src/console.o src/console_cmds.o src/console_gui.o src/core/alloc_func.o src/core/bitmath_func.o src/core/geometry_func.o src/core/math_func.o src/core/pool_func.o src/core/random_func.o \
+						src/cpu.o src/crashlog.o src/currency.o src/date.o src/date_gui.o src/debug.o src/dedicated.o src/depot.o src/depot_cmd.o src/depot_gui.o src/disaster_vehicle.o src/dock_gui.o src/driver.o src/economy.o src/effectvehicle.o src/elrail.o src/engine.o src/engine_gui.o src/error_gui.o src/fileio.o \
+						src/fios.o src/fios_gui.o src/fontcache.o src/fontdetection.o src/framerate_gui.o src/game/game_config.o src/game/game_core.o src/game/game_info.o src/game/game_instance.o src/game/game_scanner.o src/game/game_text.o src/gamelog.o src/genworld.o \
+						src/genworld_gui.o src/gfx.o src/gfx_layout.o src/gfxinit.o src/goal.o src/goal_gui.o src/graph_gui.o src/ground_vehicle.o src/group_cmd.o src/group_gui.o src/heightmap.o src/highscore.o src/highscore_gui.o src/hotkeys.o src/industry_cmd.o src/industry_gui.o src/ini.o \
+						src/ini_load.o src/intro_gui.o src/landscape.o src/linkgraph/demands.o src/linkgraph/flowmapper.o src/linkgraph/linkgraph.o src/linkgraph/linkgraph_gui.o src/linkgraph/linkgraphjob.o src/linkgraph/linkgraphschedule.o src/linkgraph/mcf.o src/linkgraph/refresh.o \
+						src/main_gui.o src/map.o src/misc.o src/misc/countedobj.o src/misc/dbg_helpers.o src/misc/getoptdata.o src/misc_cmd.o src/misc_gui.o src/mixer.o src/music.o src/music/extmidi.o src/music/midifile.o src/music/null_m.o src/music_gui.o src/network/core/address.o \
+						src/network/core/core.o src/network/core/host.o src/network/core/packet.o src/network/core/tcp.o src/network/core/tcp_admin.o src/network/core/tcp_connect.o src/network/core/tcp_content.o src/network/core/tcp_game.o src/network/core/tcp_http.o \
+						src/network/core/udp.o src/network/network.o src/network/network_admin.o src/network/network_chat_gui.o src/network/network_client.o src/network/network_command.o src/network/network_content.o src/network/network_content_gui.o \
+						src/network/network_gamelist.o src/network/network_gui.o src/network/network_server.o src/network/network_udp.o src/newgrf.o src/newgrf_airport.o src/newgrf_airporttiles.o src/newgrf_canal.o src/newgrf_cargo.o src/newgrf_commons.o \
+						src/newgrf_config.o src/newgrf_debug_gui.o src/newgrf_engine.o src/newgrf_generic.o src/newgrf_gui.o src/newgrf_house.o src/newgrf_industries.o src/newgrf_industrytiles.o src/newgrf_object.o src/newgrf_profiling.o src/newgrf_railtype.o src/newgrf_roadtype.o \
+						src/newgrf_sound.o src/newgrf_spritegroup.o src/newgrf_station.o src/newgrf_storage.o src/newgrf_text.o src/newgrf_town.o src/newgrf_townname.o src/news_gui.o src/object_cmd.o src/object_gui.o src/openttd.o src/order_backup.o src/order_cmd.o \
+						src/order_gui.o src/os/unix/crashlog_unix.o src/os/unix/unix.o src/osk_gui.o src/pathfinder/npf/aystar.o src/pathfinder/npf/npf.o src/pathfinder/npf/queue.o src/pathfinder/yapf/yapf_rail.o src/pathfinder/yapf/yapf_road.o src/pathfinder/yapf/yapf_ship.o \
+						src/pbs.o src/progress.o src/rail.o src/rail_cmd.o src/rail_gui.o src/rev.o src/road.o src/road_cmd.o src/road_gui.o src/road_map.o src/roadstop.o src/roadveh_cmd.o src/roadveh_gui.o src/saveload/afterload.o src/saveload/ai_sl.o src/saveload/airport_sl.o src/saveload/animated_tile_sl.o \
+						src/saveload/autoreplace_sl.o src/saveload/cargomonitor_sl.o src/saveload/cargopacket_sl.o src/saveload/cheat_sl.o src/saveload/company_sl.o src/saveload/depot_sl.o src/saveload/economy_sl.o src/saveload/engine_sl.o src/saveload/game_sl.o \
+						src/saveload/gamelog_sl.o src/saveload/goal_sl.o src/saveload/group_sl.o src/saveload/industry_sl.o src/saveload/labelmaps_sl.o src/saveload/linkgraph_sl.o src/saveload/map_sl.o src/saveload/misc_sl.o src/saveload/newgrf_sl.o src/saveload/object_sl.o \
+						src/saveload/oldloader.o src/saveload/oldloader_sl.o src/saveload/order_sl.o src/saveload/saveload.o src/saveload/signs_sl.o src/saveload/station_sl.o src/saveload/storage_sl.o src/saveload/story_sl.o src/saveload/strings_sl.o src/saveload/subsidy_sl.o\
+						src/saveload/town_sl.o src/saveload/vehicle_sl.o src/saveload/waypoint_sl.o src/screenshot.o src/screenshot_gui.o src/script/api/script_accounting.o src/script/api/script_admin.o src/script/api/script_airport.o src/script/api/script_base.o \
+						src/script/api/script_basestation.o src/script/api/script_bridge.o src/script/api/script_bridgelist.o src/script/api/script_cargo.o src/script/api/script_cargolist.o src/script/api/script_cargomonitor.o src/script/api/script_client.o \
+						src/script/api/script_clientlist.o src/script/api/script_company.o src/script/api/script_companymode.o src/script/api/script_controller.o src/script/api/script_date.o src/script/api/script_depotlist.o src/script/api/script_engine.o src/script/api/script_enginelist.o \
+						src/script/api/script_error.o src/script/api/script_event.o src/script/api/script_event_types.o src/script/api/script_execmode.o src/script/api/script_game.o src/script/api/script_gamesettings.o src/script/api/script_goal.o src/script/api/script_group.o \
+						src/script/api/script_grouplist.o src/script/api/script_industry.o src/script/api/script_industrylist.o src/script/api/script_industrytype.o src/script/api/script_industrytypelist.o src/script/api/script_infrastructure.o src/script/api/script_list.o src/script/api/script_log.o \
+						src/script/api/script_map.o src/script/api/script_marine.o src/script/api/script_news.o src/script/api/script_object.o src/script/api/script_order.o src/script/api/script_rail.o src/script/api/script_railtypelist.o src/script/api/script_road.o \
+						src/script/api/script_roadtypelist.o src/script/api/script_sign.o src/script/api/script_signlist.o src/script/api/script_station.o src/script/api/script_stationlist.o src/script/api/script_story_page.o src/script/api/script_storypageelementlist.o \
+						src/script/api/script_storypagelist.o src/script/api/script_subsidy.o src/script/api/script_subsidylist.o src/script/api/script_testmode.o src/script/api/script_text.o src/script/api/script_tile.o src/script/api/script_tilelist.o \
+						src/script/api/script_town.o src/script/api/script_townlist.o src/script/api/script_tunnel.o src/script/api/script_vehicle.o src/script/api/script_vehiclelist.o src/script/api/script_viewport.o src/script/api/script_waypoint.o \
+						src/script/api/script_waypointlist.o src/script/api/script_window.o src/script/script_config.o src/script/script_info.o src/script/script_info_dummy.o src/script/script_instance.o src/script/script_scanner.o \
+						src/script/squirrel.o src/script/squirrel_std.o src/settings.o src/settings_gui.o src/ship_cmd.o src/ship_gui.o src/signal.o src/signs.o src/signs_cmd.o src/signs_gui.o src/smallmap_gui.o src/sound.o src/sound/null_s.o src/sound/sdl2_s.o \
+						src/sprite.o src/spritecache.o src/spriteloader/grf.o src/station.o src/station_cmd.o src/station_gui.o src/statusbar_gui.o src/story.o src/story_gui.o src/strgen/strgen_base.o src/string.o src/stringfilter.o src/strings.o src/subsidy.o \
+						src/subsidy_gui.o src/terraform_cmd.o src/terraform_gui.o src/textbuf.o src/texteff.o src/textfile_gui.o src/tgp.o src/tile_map.o src/tilearea.o src/timetable_cmd.o src/timetable_gui.o src/toolbar_gui.o src/town_cmd.o src/town_gui.o \
+						src/townname.o src/train_cmd.o src/train_gui.o src/transparency_gui.o src/tree_cmd.o src/tree_gui.o src/tunnel_map.o src/tunnelbridge_cmd.o src/vehicle.o src/vehicle_cmd.o src/vehicle_gui.o src/vehiclelist.o \
+						src/video/dedicated_v.o src/video/null_v.o src/video/sdl2_v.o src/viewport.o src/viewport_gui.o src/void_cmd.o src/water_cmd.o src/waypoint.o src/waypoint_cmd.o src/waypoint_gui.o src/widget.o src/widgets/dropdown.o src/window.o 
+
+all:  $(TARGET)
+
+$(TARGET): $(OBJS_C)  $(OBJS_CPP) 
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
+	cp $(TARGET) $(TARGET).db
+	$(STRIP) --strip-all $(TARGET) -o $(TARGET)
+	
+clean:
+	rm -f $(OBJS_C)  $(OBJS_CPP) 
+	rm -f $(TARGET)
+
+dump:
+	ppc-morphos-objdump --disassemble-all --reloc $(TARGET).db >$(TARGET).s
