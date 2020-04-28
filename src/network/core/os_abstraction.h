@@ -117,8 +117,6 @@ typedef unsigned long in_addr_t;
 
 #define IPV6_V6ONLY 27
 
-
-
 /*
  * IPv6 address
  */
@@ -149,9 +147,8 @@ typedef unsigned long in_addr_t;
 #endif /* OS/2 */
 
 #ifdef __MORPHOS__
-#undef Node
 #include <exec/types.h>
-//nclude <proto/exec.h>
+//#include <proto/exec.h>
 #include <proto/socket.h>
 #include "arpa/inet.h"
 #define UBYTE char
@@ -164,12 +161,11 @@ typedef unsigned long in_addr_t;
 #define ioctl ioctlsocket
 typedef unsigned int	int_addr_t;
 
-//#include <proto/exec.h>
 //extern struct Library *SocketBase = NULL;
 
 #define sockaddr_storage sockaddr
-#	include "../../3rdparty/mos/getaddrinfo.h"
-#	include "../../3rdparty/mos/getnameinfo.h"
+#include "../../3rdparty/mos/getaddrinfo.h"
+#include "../../3rdparty/mos/getnameinfo.h"
 
 #endif
 
@@ -203,6 +199,8 @@ static inline bool SetNoDelay(SOCKET d)
 
 /* Make sure these structures have the size we expect them to be */
 assert_compile(sizeof(in_addr)  ==  4); ///< IPv4 addresses should be 4 bytes.
-//assert_compile(sizeof(in6_addr) == 16); ///< IPv6 addresses should be 16 bytes.
+#ifndef __MORPHOS__
+assert_compile(sizeof(in6_addr) == 16); ///< IPv6 addresses should be 16 bytes.
+#endif
 
 #endif /* NETWORK_CORE_OS_ABSTRACTION_H */

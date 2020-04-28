@@ -13,7 +13,11 @@
 #include "../../date_func.h"
 #include "../../debug.h"
 #include "udp.h"
+
+#ifdef __MORPHOS__
 #undef send
+#endif
+
 #include "../../safeguards.h"
 
 /**

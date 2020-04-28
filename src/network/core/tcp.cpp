@@ -103,9 +103,7 @@ SendPacketsState NetworkTCPSocketHandler::SendPackets(bool closing_down)
 
 	p = this->packet_queue;
 	while (p != nullptr) {
-
 		res = send(this->sock, (const char*)p->buffer + p->pos, p->size - p->pos, 0);
-
 		if (res == -1) {
 			int err = GET_LAST_ERROR();
 			if (err != EWOULDBLOCK) {
@@ -161,7 +159,6 @@ Packet *NetworkTCPSocketHandler::ReceivePacket()
 		while (p->pos < sizeof(PacketSize)) {
 		/* Read the size of the packet */
 			res = recv(this->sock, (char*)p->buffer + p->pos, sizeof(PacketSize) - p->pos, 0);
-
 			if (res == -1) {
 				int err = GET_LAST_ERROR();
 				if (err != EWOULDBLOCK) {
@@ -192,9 +189,7 @@ Packet *NetworkTCPSocketHandler::ReceivePacket()
 
 	/* Read rest of packet */
 	while (p->pos < p->size) {
-
 		res = recv(this->sock, (char*)p->buffer + p->pos, p->size - p->pos, 0);
-
 		if (res == -1) {
 			int err = GET_LAST_ERROR();
 			if (err != EWOULDBLOCK) {
@@ -238,8 +233,8 @@ bool NetworkTCPSocketHandler::CanSendReceive()
 	FD_SET(this->sock, &read_fd);
 	FD_SET(this->sock, &write_fd);
 
-	tv.tv_sec = tv.tv_usec = 0; // don't block at all.*
-	#if !defined(__MORPHOS__)
+	tv.tv_sec = tv.tv_usec = 0; // don't block at all.
+	#ifndef __MORPHOS__
 	if (select(FD_SETSIZE, &read_fd, &write_fd, nullptr, &tv) < 0) return false;
 	#else
 	if (WaitSelect(FD_SETSIZE, &read_fd, &write_fd, nullptr, &tv, NULL) < 0) return false;
