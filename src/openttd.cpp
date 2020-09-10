@@ -74,7 +74,6 @@
 #include "safeguards.h"
 
 #ifdef __MORPHOS__
-	#include <proto/exec.h>
 	#include <proto/openurl.h>
 #endif
 
@@ -394,11 +393,11 @@ void OpenBrowser(const char *url)
 	extern void OSOpenBrowser(const char *url);
 	OSOpenBrowser(url);
 	#else
-	struct Library *OpenURLBase = OpenLibrary("openurl.library",0);
+	//struct Library *OpenURLBase = OpenLibrary("openurl.library",0);
 	static const struct TagItem URLTags[] = {{TAG_DONE, (ULONG) NULL}};
 	if (OpenURLBase){
 		URL_OpenA((STRPTR)url, (struct TagItem*) URLTags);
-		CloseLibrary(OpenURLBase);
+		//CloseLibrary(OpenURLBase);
 	}
 	#endif
 }

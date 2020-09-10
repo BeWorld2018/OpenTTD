@@ -13,10 +13,6 @@
 #ifndef NEWGRF_COMMONS_H
 #define NEWGRF_COMMONS_H
 
-#ifdef __MORPHOS__
-#undef Allocate
-#endif
-
 #include "sprite.h"
 #include "core/alloc_type.hpp"
 #include "core/smallvec_type.hpp"

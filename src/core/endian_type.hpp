@@ -40,6 +40,8 @@
 #	else
 #		define TTD_ENDIAN TTD_BIG_ENDIAN
 #	endif
+#elif defined(__MORPHOS__)
+#define TTD_ENDIAN TTD_BIG_ENDIAN
 #elif !defined(TESTING)
 #	include <sys/param.h>
 #	if __BYTE_ORDER == __LITTLE_ENDIAN

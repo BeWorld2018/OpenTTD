@@ -10,10 +10,6 @@
 #ifndef NEWGRF_CLASS_H
 #define NEWGRF_CLASS_H
 
-#ifdef __MORPHOS__
-#undef Allocate
-#endif
-
 #include "strings_type.h"
 
 /**

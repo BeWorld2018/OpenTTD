@@ -16,8 +16,10 @@
 
 #include "../../safeguards.h"
 
+#ifdef __MORPHOS__
 #include <proto/exec.h>
-extern struct Library *SocketBase = NULL;
+struct Library *SocketBase = NULL;
+#endif
 
 /**
  * Initializes the network core (as that is needed for some platforms
@@ -25,7 +27,8 @@ extern struct Library *SocketBase = NULL;
  */
 bool NetworkCoreInitialize()
 {
-	#if defined(__MORPHOS__)
+
+#ifdef __MORPHOS__
 	SocketBase = OpenLibrary("bsdsocket.library",4);
 	if (SocketBase == NULL) {
 		return false;
