@@ -11,6 +11,7 @@
 #define SETTINGS_TYPE_H
 
 #include "date_type.h"
+#include "economy_type.h"
 #include "town_type.h"
 #include "transport_type.h"
 #include "network/core/config.h"
@@ -20,6 +21,15 @@
 #include "zoom_type.h"
 #include "openttd.h"
 
+/* Used to validate sizes of "max" value in settings. */
+const size_t MAX_SLE_UINT8 = UINT8_MAX;
+const size_t MAX_SLE_UINT16 = UINT16_MAX;
+const size_t MAX_SLE_UINT32 = UINT32_MAX;
+const size_t MAX_SLE_UINT = UINT_MAX;
+const size_t MAX_SLE_INT8 = INT8_MAX;
+const size_t MAX_SLE_INT16 = INT16_MAX;
+const size_t MAX_SLE_INT32 = INT32_MAX;
+const size_t MAX_SLE_INT = INT_MAX;
 
 /** Settings profiles and highscore tables. */
 enum SettingsProfile {
@@ -107,7 +117,6 @@ struct GUISettings {
 	uint8  window_soft_limit;                ///< soft limit of maximum number of non-stickied non-vital windows (0 = no limit)
 	ZoomLevel zoom_min;                      ///< minimum zoom out level
 	ZoomLevel zoom_max;                      ///< maximum zoom out level
-	bool   disable_unsuitable_building;      ///< disable infrastructure building when no suitable vehicles are available
 	byte   autosave;                         ///< how often should we do autosaves?
 	bool   threaded_saves;                   ///< should we do threaded saves?
 	bool   keep_all_autosave;                ///< name the autosave in a different way
@@ -146,6 +155,9 @@ struct GUISettings {
 	uint8  osk_activation;                   ///< Mouse gesture to trigger the OSK.
 	byte   starting_colour;                  ///< default color scheme for the company to start a new game with
 	bool   show_newgrf_name;                 ///< Show the name of the NewGRF in the build vehicle window
+	bool   auto_remove_signals;              ///< automatically remove signals when in the way during rail construction
+	uint16 refresh_rate;                     ///< How often we refresh the screen (time between draw-ticks).
+	uint16 fast_forward_speed_limit;         ///< Game speed to use when fast-forward is enabled.
 
 	uint16 console_backlog_timeout;          ///< the minimum amount of time items should be in the console backlog before they will be removed in ~3 seconds granularity.
 	uint16 console_backlog_length;           ///< the minimum amount of items in the console backlog before items will be removed.
@@ -254,7 +266,6 @@ struct NetworkSettings {
 	char   rcon_password[NETWORK_PASSWORD_LENGTH];        ///< password for rconsole (server side)
 	char   admin_password[NETWORK_PASSWORD_LENGTH];       ///< password for the admin network
 	bool   server_advertise;                              ///< advertise the server to the masterserver
-	uint8  lan_internet;                                  ///< search on the LAN or internet for servers
 	char   client_name[NETWORK_CLIENT_NAME_LENGTH];       ///< name of the player (as client)
 	char   default_company_pass[NETWORK_PASSWORD_LENGTH]; ///< default password for new companies in encrypted form
 	char   connect_to_ip[NETWORK_HOSTNAME_LENGTH];        ///< default for the "Add server" query
@@ -470,7 +481,7 @@ struct VehicleSettings {
 struct EconomySettings {
 	bool   inflation;                        ///< disable inflation
 	bool   bribe;                            ///< enable bribing the local authority
-	bool   smooth_economy;                   ///< smooth economy
+	EconomyType type;                        ///< economy type (original/smooth/frozen)
 	bool   allow_shares;                     ///< allow the buying/selling of shares
 	uint8  min_years_for_shares;             ///< minimum age of a company for it to trade shares
 	uint8  feeder_payment_share;             ///< percentage of leg payment to virtually pay in feeder systems

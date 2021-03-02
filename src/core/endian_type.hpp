@@ -12,10 +12,10 @@
 
 #if defined(ARM) || defined(__arm__) || defined(__alpha__)
 	/** The architecture requires aligned access. */
-	#define OTTD_ALIGNMENT 1
+#	define OTTD_ALIGNMENT 1
 #else
 	/** The architecture does not require aligned access. */
-	#define OTTD_ALIGNMENT 0
+#	define OTTD_ALIGNMENT 0
 #endif
 
 /** Little endian builds use this for TTD_ENDIAN. */
@@ -50,5 +50,9 @@
 #		define TTD_ENDIAN TTD_BIG_ENDIAN
 #	endif
 #endif /* _WIN32 || __OS2__ */
+
+#if !defined(TTD_ENDIAN)
+#	error "TTD_ENDIAN is not defined; please set it to either TTD_LITTLE_ENDIAN or TTD_BIG_ENDIAN"
+#endif /* !TTD_ENDIAN */
 
 #endif /* ENDIAN_TYPE_HPP */
