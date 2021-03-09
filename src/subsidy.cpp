@@ -439,7 +439,6 @@ bool FindSubsidyCargoDestination(CargoID cid, SourceType src_type, SourceID src)
 		case ST_TOWN: {
 			/* Select a random town. */
 			const Town *dst_town = Town::GetRandom();
-			CargoArray town_cargo_accepted = GetAcceptanceAroundTiles(dst_town->xy, 1, 1, SUBSIDY_TOWN_CARGO_RADIUS);
 
 			/* Calculate cargo acceptance of houses around town center. */
 			CargoArray town_cargo_accepted;

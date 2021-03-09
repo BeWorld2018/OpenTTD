@@ -45,7 +45,6 @@ IniFile::IniFile(const char * const *list_group_names) : IniLoadFile(list_group_
  */
 bool IniFile::SaveToDisk(const std::string &filename)
 {
-
 	/*
 	 * First write the configuration to a (temporary) file and then rename
 	 * that file. This to prevent that when OpenTTD crashes during the save

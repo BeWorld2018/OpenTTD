@@ -305,9 +305,11 @@ static void ParseResolution(Dimension *res, const char *s)
  */
 static void ShutdownGame()
 {
-	
 	IConsoleFree();
 
+	if (_network_available) NetworkShutDown(); // Shut down the network and close any open connections
+
+	DriverFactoryBase::ShutdownDrivers();
 
 	UnInitWindowSystem();
 
@@ -320,19 +322,14 @@ static void ShutdownGame()
 
 	LinkGraphSchedule::Clear();
 	PoolBase::Clean(PT_ALL);
-		
+
 	/* No NewGRFs were loaded when it was still bootstrapping. */
 	if (_game_mode != GM_BOOTSTRAP) ResetNewGRFData();
-	
+
 	/* Close all and any open filehandles */
 	FioCloseAll();
 
 	UninitFreeType();
-	
-		if (_network_available) NetworkShutDown(); // Shut down the network and close any open connections
-
-	DriverFactoryBase::ShutdownDrivers();
-	
 }
 
 /**

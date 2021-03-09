@@ -213,13 +213,13 @@ static std::string FiosMakeFilename(const std::string *path, const char *name, c
 	if (path != nullptr) {
 		buf = *path;
 		/* Remove trailing path separator, if present */
-
 		if (!buf.empty() && buf.back() == PATHSEPCHAR) buf.pop_back();
 	}
 
 	/* Don't append the extension if it is already there */
 	const char *period = strrchr(name, '.');
 	if (period != nullptr && strcasecmp(period, ext) == 0) ext = "";
+
 	return buf + PATHSEP + name + ext;
 }
 

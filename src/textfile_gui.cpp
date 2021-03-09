@@ -24,10 +24,11 @@
 #endif
 
 #if defined(WITH_LIBLZMA)
+#ifdef __MORPHOS__
 #define UINT32_C(v) (v ## UL)
+#endif
 #include <lzma.h>
 #endif
-
 
 #include "safeguards.h"
 
