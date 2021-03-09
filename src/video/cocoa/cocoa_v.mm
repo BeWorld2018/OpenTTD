@@ -201,6 +201,7 @@ bool VideoDriver_Cocoa::ToggleFullscreen(bool full_screen)
 		[ NSMenu setMenuBarVisible:!full_screen ];
 
 		this->UpdateVideoModes();
+		InvalidateWindowClassesData(WC_GAME_OPTIONS, 3);
 		return true;
 	}
 
@@ -213,7 +214,7 @@ bool VideoDriver_Cocoa::ToggleFullscreen(bool full_screen)
  */
 bool VideoDriver_Cocoa::AfterBlitterChange()
 {
-	this->ChangeResolution(_cur_resolution.width, _cur_resolution.height);
+	this->AllocateBackingStore(true);
 	return true;
 }
 
@@ -224,7 +225,7 @@ void VideoDriver_Cocoa::EditBoxLostFocus()
 {
 	[ [ this->cocoaview inputContext ] discardMarkedText ];
 	/* Clear any marked string from the current edit box. */
-	HandleTextInput(NULL, true);
+	HandleTextInput(nullptr, true);
 }
 
 /**
@@ -434,6 +435,8 @@ void VideoDriver_Cocoa::InputLoop()
 /** Main game loop. */
 void VideoDriver_Cocoa::MainLoopReal()
 {
+	this->StartGameThread();
+
 	for (;;) {
 		@autoreleasepool {
 			if (_exit_game) {
@@ -442,12 +445,12 @@ void VideoDriver_Cocoa::MainLoopReal()
 				break;
 			}
 
-			if (this->Tick()) {
-				this->Paint();
-			}
+			this->Tick();
 			this->SleepTillNextTick();
 		}
 	}
+
+	this->StopGameThread();
 }
 
 
@@ -558,6 +561,8 @@ const char *VideoDriver_CocoaQuartz::Start(const StringList &param)
 
 	this->GameSizeChanged();
 	this->UpdateVideoModes();
+
+	this->is_game_threaded = !GetDriverParamBool(param, "no_threads") && !GetDriverParamBool(param, "no_thread");
 
 	return nullptr;
 

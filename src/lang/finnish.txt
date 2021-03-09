@@ -947,6 +947,7 @@ STR_GAME_OPTIONS_CURRENCY_CNY                                   :Kiinan renminbi
 STR_GAME_OPTIONS_CURRENCY_HKD                                   :Hongkongin dollari (HKD)
 STR_GAME_OPTIONS_CURRENCY_INR                                   :Intian rupia (INR)
 STR_GAME_OPTIONS_CURRENCY_IDR                                   :Indonesian rupia (IDR)
+STR_GAME_OPTIONS_CURRENCY_MYR                                   :Malesian ringgit (MYR)
 ############ end of currency region
 
 STR_GAME_OPTIONS_ROAD_VEHICLES_DROPDOWN_LEFT                    :Vasemmanpuolinen liikenne
@@ -999,6 +1000,7 @@ STR_GAME_OPTIONS_FULLSCREEN_TOOLTIP                             :{BLACK}Valitse 
 STR_GAME_OPTIONS_RESOLUTION                                     :{BLACK}Näytön tarkkuus
 STR_GAME_OPTIONS_RESOLUTION_TOOLTIP                             :{BLACK}Valitse käytettävä näytön tarkkuus
 STR_GAME_OPTIONS_RESOLUTION_OTHER                               :muu
+
 
 STR_GAME_OPTIONS_GUI_ZOOM_FRAME                                 :{BLACK}Käyttöliittymän koko
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_TOOLTIP                      :{BLACK}Valitse käyttöliittymäelementtien koko
@@ -1453,6 +1455,10 @@ STR_CONFIG_SETTING_EXPENSES_LAYOUT                              :Ryhmitä kulut 
 STR_CONFIG_SETTING_EXPENSES_LAYOUT_HELPTEXT                     :Määritä asettelu yhtiön rahoitusikkunalle
 STR_CONFIG_SETTING_AUTO_REMOVE_SIGNALS                          :Poista automaattisesti opastimia rautateitä rakennettaessa: {STRING}
 STR_CONFIG_SETTING_AUTO_REMOVE_SIGNALS_HELPTEXT                 :Poista automaattisesti opastimia, jos ne ovat rautatien rakentamisen tiellä. Huomaa, että tämä saattaa johtaa junien yhteentörmäyksiin.
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT                     :Nopeutetun pelin enimmäisnopeus: {STRING}
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT_HELPTEXT            :Yläraja pelin nopeudelle, kun pelin nopeutus on käytössä. 0 = ei rajoitusta (niin nopeasti kuin tietokoneesi sallii). Alle 100 %:n arvot hidastavat peliä. Yläraja riippuu tietokoneesi ominaisuuksista ja voi vaihdella pelistä riippuen.
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT_VAL                 :{NUM} % pelin normaalinopeudesta
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT_ZERO                :Ei rajoitusta (niin nopeasti kuin koneesi sallii)
 
 STR_CONFIG_SETTING_SOUND_TICKER                                 :Uutiset: {STRING}
 STR_CONFIG_SETTING_SOUND_TICKER_HELPTEXT                        :Toista ääni tiivistetyille uutisviesteille
@@ -1781,6 +1787,8 @@ STR_CONFIG_ERROR_INVALID_BASE_SOUNDS_NOT_FOUND                  :{WHITE}... ohit
 STR_CONFIG_ERROR_INVALID_BASE_MUSIC_NOT_FOUND                   :{WHITE}... ohitetaan musiikkipaketti ”{STRING}”: ei löydetty
 STR_CONFIG_ERROR_OUT_OF_MEMORY                                  :{WHITE}Muisti lopussa
 STR_CONFIG_ERROR_SPRITECACHE_TOO_BIG                            :{WHITE}{BYTES} sprite-välimuistin varaaminen epäonnistui. Sprite-välimuistin kooksi valittiin {BYTES}. Tämä heikentää OpenTTD:n suorituskykyä. Vähentääksesi muistivaatimuksia voit kokeilla poistaa käytöstä 32bpp-grafiikat ja/tai lähennystasoja
+
+# Video initalization errors
 
 # Intro window
 STR_INTRO_CAPTION                                               :{WHITE}OpenTTD {REV}
@@ -3184,13 +3192,10 @@ STR_LOCAL_AUTHORITY_ACTION_TOOLTIP_BRIBE                        :{YELLOW}Lahjo v
 STR_GOALS_CAPTION                                               :{WHITE}{COMPANY} Tavoitteet
 STR_GOALS_SPECTATOR_CAPTION                                     :{WHITE}Maailmanlaajuiset tavoitteet
 STR_GOALS_SPECTATOR                                             :Maailmanlaajuiset tavoitteet
-STR_GOALS_GLOBAL_TITLE                                          :{BLACK}Maailmanlaajuiset tavoitteet:
 STR_GOALS_TEXT                                                  :{ORANGE}{STRING}
 STR_GOALS_NONE                                                  :{ORANGE}- Ei mitään -
-STR_GOALS_SPECTATOR_NONE                                        :{ORANGE}- Ei saatavilla -
 STR_GOALS_PROGRESS                                              :{ORANGE}{STRING}
 STR_GOALS_PROGRESS_COMPLETE                                     :{GREEN}{STRING}
-STR_GOALS_COMPANY_TITLE                                         :{BLACK}Yhtiön tavoitteet:
 STR_GOALS_TOOLTIP_CLICK_ON_SERVICE_TO_CENTER                    :{BLACK}Keskitä päänäkymä laitokseen/kuntaan/ruutuun napsauttamalla tavoitetta. Ctrl+napsautus avaa uuden näkymäikkunan laitoksen/kunnan/ruudun sijaintiin.
 
 # Goal question window

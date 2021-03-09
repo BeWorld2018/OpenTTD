@@ -948,6 +948,7 @@ STR_GAME_OPTIONS_CURRENCY_CNY                                   :Renminbi xinès
 STR_GAME_OPTIONS_CURRENCY_HKD                                   :Dòlar de Hong Kong (HKD)
 STR_GAME_OPTIONS_CURRENCY_INR                                   :Rúpia índia (INR)
 STR_GAME_OPTIONS_CURRENCY_IDR                                   :Rupia indonèsia (IDR)
+STR_GAME_OPTIONS_CURRENCY_MYR                                   :Ringgit (MYR)
 ############ end of currency region
 
 STR_GAME_OPTIONS_ROAD_VEHICLES_DROPDOWN_LEFT                    :Conducció per l'esquerra
@@ -1000,6 +1001,7 @@ STR_GAME_OPTIONS_FULLSCREEN_TOOLTIP                             :{BLACK}Marqueu 
 STR_GAME_OPTIONS_RESOLUTION                                     :{BLACK}Resolució de pantalla
 STR_GAME_OPTIONS_RESOLUTION_TOOLTIP                             :{BLACK}Selecciona la resolució de pantalla
 STR_GAME_OPTIONS_RESOLUTION_OTHER                               :altres
+
 
 STR_GAME_OPTIONS_GUI_ZOOM_FRAME                                 :{BLACK}Mida de la interfície
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_TOOLTIP                      :{BLACK}Escull la mida dels elements de la interfície
@@ -1786,6 +1788,8 @@ STR_CONFIG_ERROR_INVALID_BASE_SOUNDS_NOT_FOUND                  :{WHITE}...s'ign
 STR_CONFIG_ERROR_INVALID_BASE_MUSIC_NOT_FOUND                   :{WHITE}...s'ignorarà el conjunt de peces de música «{STRING}» perquè no s'ha trobat.
 STR_CONFIG_ERROR_OUT_OF_MEMORY                                  :{WHITE}Memòria exhaurida
 STR_CONFIG_ERROR_SPRITECACHE_TOO_BIG                            :{WHITE}L'assignació de {BYTES} de memòria cau de sprites ha fallat. S'ha reduït aquest tipus de memòria a {BYTES}. Això reduirà el rendiment de l'OpenTTD. Per reduir els requeriments de memòria, proveu de desactivar els gràfics de 32bpp i/o els nivells extra de zoom.
+
+# Video initalization errors
 
 # Intro window
 STR_INTRO_CAPTION                                               :{WHITE}OpenTTD {REV}
@@ -3189,13 +3193,10 @@ STR_LOCAL_AUTHORITY_ACTION_TOOLTIP_BRIBE                        :{YELLOW}Suborna
 STR_GOALS_CAPTION                                               :{WHITE}{COMPANY} Objectius
 STR_GOALS_SPECTATOR_CAPTION                                     :{WHITE}Objectius globals
 STR_GOALS_SPECTATOR                                             :Objectius globals
-STR_GOALS_GLOBAL_TITLE                                          :{BLACK}Objectius globals:
 STR_GOALS_TEXT                                                  :{ORANGE}{STRING}
 STR_GOALS_NONE                                                  :{ORANGE}- Cap -
-STR_GOALS_SPECTATOR_NONE                                        :{ORANGE}- No aplicable -
 STR_GOALS_PROGRESS                                              :{ORANGE}{STRING}
 STR_GOALS_PROGRESS_COMPLETE                                     :{GREEN}{STRING}
-STR_GOALS_COMPANY_TITLE                                         :{BLACK}Objectius de la companyia:
 STR_GOALS_TOOLTIP_CLICK_ON_SERVICE_TO_CENTER                    :{BLACK}Clica sobre l'objectiu per centrar la vista principal sobre la indústria/població/cel·la. Ctrl+clic per obrir una nova vista sobre la indústria/població/cel·la
 
 # Goal question window
@@ -3834,8 +3835,8 @@ STR_VEHICLE_STATUS_HEADING_FOR_DEPOT_SERVICE_VEL                :{LTBLUE}Revisi�
 # Vehicle stopped/started animations
 STR_VEHICLE_COMMAND_STOPPED_SMALL                               :{TINY_FONT}{RED}Parat
 STR_VEHICLE_COMMAND_STOPPED                                     :{RED}Parat
-STR_VEHICLE_COMMAND_STARTED_SMALL                               :{TINY_FONT}{GREEN}Començat
-STR_VEHICLE_COMMAND_STARTED                                     :{GREEN}Començat
+STR_VEHICLE_COMMAND_STARTED_SMALL                               :{TINY_FONT}{GREEN}Engegat
+STR_VEHICLE_COMMAND_STARTED                                     :{GREEN}Engegat
 
 # Vehicle details
 STR_VEHICLE_DETAILS_CAPTION                                     :{WHITE}{VEHICLE} (Detalls)

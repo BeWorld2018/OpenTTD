@@ -16,13 +16,18 @@
 #include "../gfx_func.h"
 #include "../settings_type.h"
 #include "../zoom_type.h"
+#include <atomic>
 #include <chrono>
+#include <condition_variable>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 extern std::string _ini_videodriver;
 extern std::vector<Dimension> _resolutions;
 extern Dimension _cur_resolution;
 extern bool _rightclick_emulate;
+extern bool _video_hw_accel;
 
 /** The base of all video drivers. */
 class VideoDriver : public Driver {
@@ -30,6 +35,8 @@ class VideoDriver : public Driver {
 	const uint DEFAULT_WINDOW_HEIGHT = 480u; ///< Default window height.
 
 public:
+	VideoDriver() : is_game_threaded(true), change_blitter(nullptr) {}
+
 	/**
 	 * Mark a particular area dirty.
 	 * @param left   The left most line of the dirty area.
@@ -61,25 +68,12 @@ public:
 
 	/**
 	 * Callback invoked after the blitter was changed.
-	 * This may only be called between AcquireBlitterLock and ReleaseBlitterLock.
 	 * @return True if no error.
 	 */
 	virtual bool AfterBlitterChange()
 	{
 		return true;
 	}
-
-	/**
-	 * Acquire any lock(s) required to be held when changing blitters.
-	 * These lock(s) may not be acquired recursively.
-	 */
-	virtual void AcquireBlitterLock() { }
-
-	/**
-	 * Release any lock(s) required to be held when changing blitters.
-	 * These lock(s) may not be acquired recursively.
-	 */
-	virtual void ReleaseBlitterLock() { }
 
 	virtual bool ClaimMousePointer()
 	{
@@ -94,6 +88,11 @@ public:
 	{
 		return false;
 	}
+
+	/**
+	 * Populate all sprites in cache.
+	 */
+	virtual void PopulateSystemSprites() {}
 
 	/**
 	 * Clear all cached sprites.
@@ -160,6 +159,15 @@ public:
 		if (dpi_scale >= 3.0f) return ZOOM_LVL_NORMAL;
 		if (dpi_scale >= 1.5f) return ZOOM_LVL_OUT_2X;
 		return ZOOM_LVL_OUT_4X;
+	}
+
+	/**
+	 * Queue a request to change the blitter. This is not executed immediately,
+	 * but instead on the next draw-tick.
+	 */
+	void ChangeBlitter(const char *new_blitter)
+	{
+		this->change_blitter = new_blitter;
 	}
 
 	/**
@@ -241,11 +249,6 @@ protected:
 	virtual void Paint() {}
 
 	/**
-	 * Thread function for threaded drawing.
-	 */
-	virtual void PaintThread() {}
-
-	/**
 	 * Process any pending palette animation.
 	 */
 	virtual void CheckPaletteAnim() {}
@@ -257,10 +260,21 @@ protected:
 	virtual bool PollEvent() { return false; };
 
 	/**
-	 * Run the game for a single tick, processing boththe game-tick and draw-tick.
-	 * @returns True if the driver should redraw the screen.
+	 * Start the loop for game-tick.
 	 */
-	bool Tick();
+	void StartGameThread();
+
+	/**
+	 * Stop the loop for the game-tick. This can still tick at most one time before truly shutting down.
+	 */
+	void StopGameThread();
+
+	/**
+	 * Give the video-driver a tick.
+	 * It will process any potential game-tick and/or draw-tick, and/or any
+	 * other video-driver related event.
+	 */
+	void Tick();
 
 	/**
 	 * Sleep till the next tick is about to happen.
@@ -287,6 +301,20 @@ protected:
 
 	bool fast_forward_key_pressed; ///< The fast-forward key is being pressed.
 	bool fast_forward_via_key; ///< The fast-forward was enabled by key press.
+
+	bool is_game_threaded;
+	std::thread game_thread;
+	std::mutex game_state_mutex;
+	std::mutex game_thread_wait_mutex;
+
+	static void GameThreadThunk(VideoDriver *drv);
+
+private:
+	void GameLoop();
+	void GameThread();
+	void RealChangeBlitter(const char *repl_blitter);
+
+	const char *change_blitter; ///< Request to change the blitter. nullptr if no pending request.
 };
 
 #endif /* VIDEO_VIDEO_DRIVER_HPP */

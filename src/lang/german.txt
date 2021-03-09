@@ -948,6 +948,7 @@ STR_GAME_OPTIONS_CURRENCY_CNY                                   :Chinesische Yua
 STR_GAME_OPTIONS_CURRENCY_HKD                                   :Hongkong-Dollar (HKD)
 STR_GAME_OPTIONS_CURRENCY_INR                                   :Indische Rupie (INR)
 STR_GAME_OPTIONS_CURRENCY_IDR                                   :Indonesische Rupiah (IDR)
+STR_GAME_OPTIONS_CURRENCY_MYR                                   :Malaysische Ringgit (MYR)
 ############ end of currency region
 
 STR_GAME_OPTIONS_ROAD_VEHICLES_DROPDOWN_LEFT                    :Linksverkehr
@@ -1000,6 +1001,7 @@ STR_GAME_OPTIONS_FULLSCREEN_TOOLTIP                             :{BLACK}OpenTTD 
 STR_GAME_OPTIONS_RESOLUTION                                     :{BLACK}Bildschirmauflösung
 STR_GAME_OPTIONS_RESOLUTION_TOOLTIP                             :{BLACK}Bildschirmauflösung auswählen
 STR_GAME_OPTIONS_RESOLUTION_OTHER                               :Andere
+
 
 STR_GAME_OPTIONS_GUI_ZOOM_FRAME                                 :{BLACK}Größe der Bedienelemente
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_TOOLTIP                      :{BLACK}Wähle die Größe der Bedienelemente
@@ -1786,6 +1788,8 @@ STR_CONFIG_ERROR_INVALID_BASE_SOUNDS_NOT_FOUND                  :{WHITE}... igno
 STR_CONFIG_ERROR_INVALID_BASE_MUSIC_NOT_FOUND                   :{WHITE}... ignoriere Musikset „{STRING}“: nicht gefunden
 STR_CONFIG_ERROR_OUT_OF_MEMORY                                  :{WHITE}Zu wenig Arbeitsspeicher
 STR_CONFIG_ERROR_SPRITECACHE_TOO_BIG                            :{WHITE}Reservieren von {BYTES} des Spritecaches fehlgeschlagen. Der Spritecache wurde auf {BYTES} verkleinert. Dies wird die Performance von OpenTTD verschlechtern. Um den Speicherbedarf zu verringern, kann man versuchen, 32bpp-Grafiken auszuschalten und/oder den Zoom-Level zu begrenzen
+
+# Video initalization errors
 
 # Intro window
 STR_INTRO_CAPTION                                               :{WHITE}OpenTTD {REV}
@@ -2741,16 +2745,16 @@ STR_LAI_TUNNEL_DESCRIPTION_ROAD                                 :Straßentunnel
 
 STR_LAI_BRIDGE_DESCRIPTION_RAIL_SUSPENSION_STEEL                :Stahlhängebrücke
 STR_LAI_BRIDGE_DESCRIPTION_RAIL_GIRDER_STEEL                    :Stahlträgerbrücke
-STR_LAI_BRIDGE_DESCRIPTION_RAIL_CANTILEVER_STEEL                :Auslegerbrücke (Stahl)
-STR_LAI_BRIDGE_DESCRIPTION_RAIL_SUSPENSION_CONCRETE             :Stahlbetonbrücke
+STR_LAI_BRIDGE_DESCRIPTION_RAIL_CANTILEVER_STEEL                :Stahlauslegerbrücke
+STR_LAI_BRIDGE_DESCRIPTION_RAIL_SUSPENSION_CONCRETE             :Betonhängebrücke
 STR_LAI_BRIDGE_DESCRIPTION_RAIL_WOODEN                          :Holzbrücke
 STR_LAI_BRIDGE_DESCRIPTION_RAIL_CONCRETE                        :Betonbrücke
 STR_LAI_BRIDGE_DESCRIPTION_RAIL_TUBULAR_STEEL                   :Stahlrundbrücke
 
 STR_LAI_BRIDGE_DESCRIPTION_ROAD_SUSPENSION_STEEL                :Stahlhängebrücke
 STR_LAI_BRIDGE_DESCRIPTION_ROAD_GIRDER_STEEL                    :Stahlträgerbrücke
-STR_LAI_BRIDGE_DESCRIPTION_ROAD_CANTILEVER_STEEL                :Auslegerbrücke (Stahl)
-STR_LAI_BRIDGE_DESCRIPTION_ROAD_SUSPENSION_CONCRETE             :Stahlbetonbrücke
+STR_LAI_BRIDGE_DESCRIPTION_ROAD_CANTILEVER_STEEL                :Stahlauslegerbrücke
+STR_LAI_BRIDGE_DESCRIPTION_ROAD_SUSPENSION_CONCRETE             :Betonhängebrücke
 STR_LAI_BRIDGE_DESCRIPTION_ROAD_WOODEN                          :Holzbrücke
 STR_LAI_BRIDGE_DESCRIPTION_ROAD_CONCRETE                        :Betonbrücke
 STR_LAI_BRIDGE_DESCRIPTION_ROAD_TUBULAR_STEEL                   :Stahlrundbrücke
@@ -3189,13 +3193,10 @@ STR_LOCAL_AUTHORITY_ACTION_TOOLTIP_BRIBE                        :{YELLOW}Die Sta
 STR_GOALS_CAPTION                                               :{WHITE}{COMPANY} Ziele
 STR_GOALS_SPECTATOR_CAPTION                                     :{WHITE}Allgemeine Spielziele
 STR_GOALS_SPECTATOR                                             :Allgemeine Spielziele
-STR_GOALS_GLOBAL_TITLE                                          :{BLACK}Allgemeine Spielziele:
 STR_GOALS_TEXT                                                  :{ORANGE}{STRING}
 STR_GOALS_NONE                                                  :{ORANGE}- Keine -
-STR_GOALS_SPECTATOR_NONE                                        :{ORANGE}- n.v. -
 STR_GOALS_PROGRESS                                              :{ORANGE}{STRING}
 STR_GOALS_PROGRESS_COMPLETE                                     :{GREEN}{STRING}
-STR_GOALS_COMPANY_TITLE                                         :{BLACK}Firmenspezifische Ziele:
 STR_GOALS_TOOLTIP_CLICK_ON_SERVICE_TO_CENTER                    :{BLACK}Klick auf Ziel zentriert Hauptansicht auf Industrie/Stadt/Feld. Strg+Klick öffnet eine darauf zentrierte Zusatzansicht
 
 # Goal question window
@@ -3843,8 +3844,8 @@ STR_VEHICLE_NAME_BUTTON                                         :{BLACK}Name
 
 STR_VEHICLE_DETAILS_TRAIN_RENAME                                :{BLACK}Name des Zuges
 STR_VEHICLE_DETAILS_ROAD_VEHICLE_RENAME                         :{BLACK}Name des Fahrzeuges
-STR_VEHICLE_DETAILS_SHIP_RENAME                                 :{BLACK}Schiffsname
-STR_VEHICLE_DETAILS_AIRCRAFT_RENAME                             :{BLACK}Flugzeugname
+STR_VEHICLE_DETAILS_SHIP_RENAME                                 :{BLACK}Name des Schiffs
+STR_VEHICLE_DETAILS_AIRCRAFT_RENAME                             :{BLACK}Name des Flugzeugs
 
 STR_VEHICLE_INFO_AGE_RUNNING_COST_YR                            :{BLACK}Alter: {LTBLUE}{STRING}{BLACK}   Betriebskosten: {LTBLUE}{CURRENCY_LONG}/Jahr
 # The next two need to stay in this order
@@ -4224,8 +4225,8 @@ STR_SCREENSHOT_SCREENSHOT                                       :{BLACK}Normaler
 STR_SCREENSHOT_ZOOMIN_SCREENSHOT                                :{BLACK}Screenshot auf der größten Zoomstufe
 STR_SCREENSHOT_DEFAULTZOOM_SCREENSHOT                           :{BLACK}Screenshot auf der Standard-Zoomstufe
 STR_SCREENSHOT_WORLD_SCREENSHOT                                 :{BLACK}Screenshot des ganzen Spielfeldes
-STR_SCREENSHOT_HEIGHTMAP_SCREENSHOT                             :{BLACK}Reliefkarten-Screenshot
-STR_SCREENSHOT_MINIMAP_SCREENSHOT                               :{BLACK}Minimap Screenshot
+STR_SCREENSHOT_HEIGHTMAP_SCREENSHOT                             :{BLACK}Reliefkartenscreenshot
+STR_SCREENSHOT_MINIMAP_SCREENSHOT                               :{BLACK}Übersichtskartenscreenshot
 
 # AI Parameters
 STR_AI_SETTINGS_CAPTION                                         :{WHITE}{STRING} Parameter
