@@ -17,7 +17,7 @@
 /** Music driver making use of libtimidity. */
 class MusicDriver_LibTimidity : public MusicDriver {
 public:
-	const char *Start(const char * const *param) override;
+	const char *Start(const StringList &param) override;
 
 	void Stop() override;
 
@@ -35,7 +35,7 @@ public:
 class FMusicDriver_LibTimidity : public DriverFactoryBase {
 public:
 	FMusicDriver_LibTimidity() : DriverFactoryBase(Driver::DT_MUSIC, 5, "libtimidity", "LibTimidity MIDI Driver") {}
-	/* virtual */ Driver *CreateInstance() const override { return new MusicDriver_LibTimidity(); }
+	Driver *CreateInstance() const override { return new MusicDriver_LibTimidity(); }
 };
 
 #endif /* MUSIC_LIBTIMIDITY_H */

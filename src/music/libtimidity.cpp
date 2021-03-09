@@ -55,17 +55,22 @@ static void RenderLibtimidityStream(int16 *buffer, size_t samples)
 	
 }
 
-const char *MusicDriver_LibTimidity::Start(const char * const *param)
+const char *MusicDriver_LibTimidity::Start(const StringList &param)
 {
 	_midi.status = MIDI_STOPPED;
 	_midi.song = nullptr;
 	_midi.volume = 127;
 
-	if (mid_init(param == nullptr ? nullptr : const_cast<char *>(param[0])) < 0) {
+	const char *prm = GetDriverParam(param, "libtimidity");
+	if (!prm)
+	{
+		return "error initializing timidity";
+	}
+	if (mid_init(prm) < 0) {
 		/* If init fails, it can be because no configuration was found.
 		 *  If it was not forced via param, try to load it without a
 		 *  configuration. Who knows that works. */
-		if (param != nullptr || mid_init_no_config() < 0) {
+		if (mid_init_no_config() < 0) {
 			return "error initializing timidity";
 		}
 	}

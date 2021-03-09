@@ -27,7 +27,9 @@ INSTANTIATE_POOL_METHODS(Depot)
  */
 Depot::~Depot()
 {
+	#ifndef __MORPHOS__
 	free(this->name);
+	#endif
 
 	if (CleaningPool()) return;
 
