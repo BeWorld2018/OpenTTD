@@ -1,23 +1,31 @@
 TARGET = bin/OpenTTD
 
-LIBS =  -lSDL2  -L/usr/local/lib -noixemul -lc -lm  -lz_shared -lpng_shared -llzo2 -lfreetype -ltimidity
-CC = ppc-morphos-gcc-9
-CXX = ppc-morphos-g++-9
+LIBS =  -lSDL2  -L/usr/local/lib -noixemul -lc -lm  -lz_shared -lpng_shared -llzo2 -lfreetype -lfluidsynth 
+#-ltimidity
+CC = ppc-morphos-gcc-10
+CXX = ppc-morphos-g++-10
 STRIP = ppc-morphos-strip
-CXXFLAGS = -std=c++11 -D__MORPHOS_SHAREDLIBS -noixemul  -Wno-multichar -DMORPHOS -O0 -Wall -I/usr/local/include -I/usr/local/include/SDL2 \
-					-DWITH_LIBLZMA -DWITH_FREETYPE -DWITH_PNG -DUNIX -DWITH_SDL2  -DWITH_ZLIB   -DWITH_LZO  -DNO_THREADS \
-					-DGLOBAL_DATA_DIR=\"\"  -Isrc/3rdparty/squirrel/include -I./src -Isrc
+CXXFLAGS = -std=c++17 -D__MORPHOS_SHAREDLIBS -noixemul  -Wno-multichar -DMORPHOS -I/usr/local/include -I/usr/local/include/SDL2 \
+					-DWITH_LIBLZMA -DWITH_FREETYPE -DWITH_PNG -DUNIX -DWITH_SDL2  -DWITH_ZLIB  -DWITH_LZO   \
+					-DGLOBAL_DATA_DIR=\"\"  -Isrc/3rdparty/squirrel/include -Isrc   -DNO_THREADS -O2 \
+					-D_FORTIFY_SOURCE=2 -W -Wall -Wcast-qual -Wextra -Wsign-compare -Wundef -Wpointer-arith -Wwrite-strings -Wredundant-decls -Wformat-security -Wformat=2 -Winit-self -Wnon-virtual-dtor -Wno-unused-parameter -Wno-multichar -fno-strict-aliasing -fno-strict-overflow -fno-tree-vrp -flifetime-dse=1 -std=c++17
 CFLAGS   = -noixemul  -D__MORPHOS_SHAREDLIBS  -Wall -Wno-strict-prototypes					
-	
+	# -DWITH_OPENGL 
 OBJS_C   := src/3rdparty/mos/getaddrinfo.o src/3rdparty/mos/getnameinfo.o 
-OBJS_CPP := 	src/music/libtimidity.o src/3rdparty/md5/md5.o src/3rdparty/squirrel/sqstdlib/sqstdaux.o src/3rdparty/squirrel/sqstdlib/sqstdmath.o src/3rdparty/squirrel/squirrel/sqapi.o src/3rdparty/squirrel/squirrel/sqbaselib.o src/3rdparty/squirrel/squirrel/sqclass.o \
-						src/3rdparty/squirrel/squirrel/sqcompiler.o src/3rdparty/squirrel/squirrel/sqdebug.o src/3rdparty/squirrel/squirrel/sqfuncstate.o src/3rdparty/squirrel/squirrel/sqlexer.o src/3rdparty/squirrel/squirrel/sqmem.o src/3rdparty/squirrel/squirrel/sqobject.o \
-						src/3rdparty/squirrel/squirrel/sqstate.o src/3rdparty/squirrel/squirrel/sqtable.o src/3rdparty/squirrel/squirrel/sqvm.o src/ai/ai_config.o src/ai/ai_core.o src/ai/ai_gui.o src/ai/ai_info.o src/ai/ai_instance.o src/ai/ai_scanner.o src/aircraft_cmd.o src/aircraft_gui.o \
-						src/airport.o src/airport_gui.o src/animated_tile.o src/articulated_vehicles.o src/autoreplace.o src/autoreplace_cmd.o src/autoreplace_gui.o src/base_consist.o src/blitter/32bpp_anim.o src/blitter/32bpp_base.o src/blitter/32bpp_optimized.o src/blitter/32bpp_simple.o \
-						src/blitter/8bpp_base.o src/blitter/8bpp_optimized.o src/blitter/8bpp_simple.o src/blitter/null.o src/bmp.o src/bootstrap_gui.o src/bridge_gui.o src/bridge_map.o src/build_vehicle_gui.o src/cargoaction.o src/cargomonitor.o src/cargopacket.o src/cargotype.o src/cheat.o src/cheat_gui.o \
+
+#	src/music/libtimidity.o 
+
+OBJS_CPP :=  src/music/fluidsynth.o src/3rdparty/md5/md5.o src/3rdparty/squirrel/sqstdlib/sqstdaux.o src/3rdparty/squirrel/sqstdlib/sqstdmath.o src/3rdparty/squirrel/squirrel/sqapi.o src/3rdparty/squirrel/squirrel/sqbaselib.o src/3rdparty/squirrel/squirrel/sqclass.o \
+			src/3rdparty/squirrel/squirrel/sqcompiler.o src/3rdparty/squirrel/squirrel/sqdebug.o src/3rdparty/squirrel/squirrel/sqfuncstate.o src/3rdparty/squirrel/squirrel/sqlexer.o src/3rdparty/squirrel/squirrel/sqmem.o src/3rdparty/squirrel/squirrel/sqobject.o \
+			src/3rdparty/squirrel/squirrel/sqstate.o src/3rdparty/squirrel/squirrel/sqtable.o src/3rdparty/squirrel/squirrel/sqvm.o src/ai/ai_config.o src/ai/ai_core.o src/ai/ai_gui.o src/ai/ai_info.o src/ai/ai_instance.o src/ai/ai_scanner.o src/aircraft_cmd.o src/aircraft_gui.o \
+						src/airport.o src/airport_gui.o src/animated_tile.o src/articulated_vehicles.o src/autoreplace.o src/autoreplace_cmd.o src/autoreplace_gui.o src/base_consist.o \
+						src/blitter/32bpp_anim.o src/blitter/32bpp_base.o src/blitter/32bpp_optimized.o src/blitter/32bpp_simple.o \
+						src/blitter/40bpp_anim.o \
+						src/blitter/8bpp_base.o src/blitter/8bpp_optimized.o src/blitter/8bpp_simple.o src/blitter/null.o \
+						src/bmp.o src/bootstrap_gui.o src/bridge_gui.o src/bridge_map.o src/build_vehicle_gui.o src/cargoaction.o src/cargomonitor.o src/cargopacket.o src/cargotype.o src/cheat.o src/cheat_gui.o \
 						src/clear_cmd.o src/command.o src/company_cmd.o src/company_gui.o src/console.o src/console_cmds.o src/console_gui.o src/core/alloc_func.o src/core/bitmath_func.o src/core/geometry_func.o src/core/math_func.o src/core/pool_func.o src/core/random_func.o \
 						src/cpu.o src/crashlog.o src/currency.o src/date.o src/date_gui.o src/debug.o src/dedicated.o src/depot.o src/depot_cmd.o src/depot_gui.o src/disaster_vehicle.o src/dock_gui.o src/driver.o src/economy.o src/effectvehicle.o src/elrail.o src/engine.o src/engine_gui.o src/error_gui.o src/fileio.o \
-						src/fios.o src/fios_gui.o src/fontcache.o src/fontdetection.o src/framerate_gui.o src/game/game_config.o src/game/game_core.o src/game/game_info.o src/game/game_instance.o src/game/game_scanner.o src/game/game_text.o src/gamelog.o src/genworld.o \
+						src/fios.o src/fios_gui.o src/fontcache.o  src/framerate_gui.o src/game/game_config.o src/game/game_core.o src/game/game_info.o src/game/game_instance.o src/game/game_scanner.o src/game/game_text.o src/gamelog.o src/genworld.o \
 						src/genworld_gui.o src/gfx.o src/gfx_layout.o src/gfxinit.o src/goal.o src/goal_gui.o src/graph_gui.o src/ground_vehicle.o src/group_cmd.o src/group_gui.o src/heightmap.o src/highscore.o src/highscore_gui.o src/hotkeys.o src/industry_cmd.o src/industry_gui.o src/ini.o \
 						src/ini_load.o src/intro_gui.o src/landscape.o src/linkgraph/demands.o src/linkgraph/flowmapper.o src/linkgraph/linkgraph.o src/linkgraph/linkgraph_gui.o src/linkgraph/linkgraphjob.o src/linkgraph/linkgraphschedule.o src/linkgraph/mcf.o src/linkgraph/refresh.o \
 						src/main_gui.o src/map.o src/misc.o src/misc/countedobj.o src/misc/dbg_helpers.o src/misc/getoptdata.o src/misc_cmd.o src/misc_gui.o src/mixer.o src/music.o src/music/extmidi.o src/music/midifile.o src/music/null_m.o src/music_gui.o src/network/core/address.o \
@@ -45,18 +53,82 @@ OBJS_CPP := 	src/music/libtimidity.o src/3rdparty/md5/md5.o src/3rdparty/squirre
 						src/sprite.o src/spritecache.o src/spriteloader/grf.o src/station.o src/station_cmd.o src/station_gui.o src/statusbar_gui.o src/story.o src/story_gui.o src/strgen/strgen_base.o src/string.o src/stringfilter.o src/strings.o src/subsidy.o \
 						src/subsidy_gui.o src/terraform_cmd.o src/terraform_gui.o src/textbuf.o src/texteff.o src/textfile_gui.o src/tgp.o src/tile_map.o src/tilearea.o src/timetable_cmd.o src/timetable_gui.o src/toolbar_gui.o src/town_cmd.o src/town_gui.o \
 						src/townname.o src/train_cmd.o src/train_gui.o src/transparency_gui.o src/tree_cmd.o src/tree_gui.o src/tunnel_map.o src/tunnelbridge_cmd.o src/vehicle.o src/vehicle_cmd.o src/vehicle_gui.o src/vehiclelist.o \
-						src/video/dedicated_v.o src/video/null_v.o src/video/sdl2_v.o src/viewport.o src/viewport_gui.o src/void_cmd.o src/water_cmd.o src/waypoint.o src/waypoint_cmd.o src/waypoint_gui.o src/widget.o src/widgets/dropdown.o src/window.o 
+						src/video/dedicated_v.o src/video/null_v.o src/video/sdl2_default_v.o src/video/video_driver.o src/video/sdl2_v.o src/video/sdl2_v.o src/viewport.o src/viewport_gui.o src/void_cmd.o src/water_cmd.o \
+						src/waypoint.o src/waypoint_cmd.o src/waypoint_gui.o src/widget.o src/widgets/dropdown.o src/window.o \
+						src/script/api/script_priorityqueue.o 
+						#src/video/sdl2_opengl_v.o src/video/opengl.o	
 
 all:  $(TARGET)
-
-$(TARGET): $(OBJS_C)  $(OBJS_CPP) 
+# 
+$(TARGET): $(OBJS_CPP) $(OBJS_C)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 	cp $(TARGET) $(TARGET).db
 	$(STRIP) --strip-all $(TARGET) -o $(TARGET)
 	
 clean:
 	rm -f $(OBJS_C)  $(OBJS_CPP) 
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(TARGET).s $(TARGET).db
+
+STRGEN = strgen -s src/lang/ -d bin/lang
+
+lang:
+	$(STRGEN) src/lang/english.txt
+	$(STRGEN) src/lang/french.txt
+	$(STRGEN) src/lang/afrikaans.txt
+	$(STRGEN) src/lang/arabic_egypt.txt
+	$(STRGEN) src/lang/basque.txt
+	$(STRGEN) src/lang/belarusian.txt
+	$(STRGEN) src/lang/brazilian_portuguese.txt
+	$(STRGEN) src/lang/bulgarian.txt
+	$(STRGEN) src/lang/catalan.txt
+	$(STRGEN) src/lang/croatian.txt
+	$(STRGEN) src/lang/czech.txt
+	$(STRGEN) src/lang/danish.txt
+	$(STRGEN) src/lang/dutch.txt
+	$(STRGEN) src/lang/english_AU.txt
+	$(STRGEN) src/lang/english_US.txt
+	$(STRGEN) src/lang/esperanto.txt
+	$(STRGEN) src/lang/estonian.txt
+	$(STRGEN) src/lang/faroese.txt
+	$(STRGEN) src/lang/finnish.txt
+	$(STRGEN) src/lang/french.txt
+	$(STRGEN) src/lang/gaelic.txt
+	$(STRGEN) src/lang/galician.txt
+	$(STRGEN) src/lang/german.txt
+	$(STRGEN) src/lang/greek.txt
+	$(STRGEN) src/lang/hebrew.txt
+	$(STRGEN) src/lang/hungarian.txt
+	$(STRGEN) src/lang/icelandic.txt
+	$(STRGEN) src/lang/indonesian.txt
+	$(STRGEN) src/lang/irish.txt
+	$(STRGEN) src/lang/italian.txt
+	$(STRGEN) src/lang/japanese.txt
+	$(STRGEN) src/lang/korean.txt
+	$(STRGEN) src/lang/latin.txt
+	$(STRGEN) src/lang/latvian.txt
+	$(STRGEN) src/lang/lithuanian.txt
+	$(STRGEN) src/lang/luxembourgish.txt
+	$(STRGEN) src/lang/malay.txt
+	$(STRGEN) src/lang/norwegian_bokmal.txt
+	$(STRGEN) src/lang/norwegian_nynorsk.txt
+	$(STRGEN) src/lang/polish.txt
+	$(STRGEN) src/lang/portuguese.txt
+	$(STRGEN) src/lang/romanian.txt
+	$(STRGEN) src/lang/russian.txt
+	$(STRGEN) src/lang/serbian.txt
+	$(STRGEN) src/lang/simplified_chinese.txt
+	$(STRGEN) src/lang/slovak.txt
+	$(STRGEN) src/lang/slovenian.txt
+	$(STRGEN) src/lang/spanish.txt
+	$(STRGEN) src/lang/spanish_MX.txt
+	$(STRGEN) src/lang/swedish.txt
+	$(STRGEN) src/lang/tamil.txt
+	$(STRGEN) src/lang/thai.txt
+	$(STRGEN) src/lang/traditional_chinese.txt
+	$(STRGEN) src/lang/turkish.txt
+	$(STRGEN) src/lang/ukrainian.txt
+	$(STRGEN) src/lang/vietnamese.txt
+	$(STRGEN) src/lang/welsh.txt
 
 dump:
 	ppc-morphos-objdump --disassemble-all --reloc $(TARGET).db >$(TARGET).s
