@@ -1000,6 +1000,7 @@ STR_GAME_OPTIONS_RESOLUTION                                     :{BLACK}Screen r
 STR_GAME_OPTIONS_RESOLUTION_TOOLTIP                             :{BLACK}Select the screen resolution to use
 STR_GAME_OPTIONS_RESOLUTION_OTHER                               :other
 
+
 STR_GAME_OPTIONS_GUI_ZOOM_FRAME                                 :{BLACK}Interface size
 STR_GAME_OPTIONS_GUI_ZOOM_DROPDOWN_TOOLTIP                      :{BLACK}Select the interface element size to use
 
@@ -1453,6 +1454,10 @@ STR_CONFIG_SETTING_EXPENSES_LAYOUT                              :Group expenses 
 STR_CONFIG_SETTING_EXPENSES_LAYOUT_HELPTEXT                     :Define the layout for the company expenses window
 STR_CONFIG_SETTING_AUTO_REMOVE_SIGNALS                          :Automatically remove signals during track construction: {STRING}
 STR_CONFIG_SETTING_AUTO_REMOVE_SIGNALS_HELPTEXT                 :Automatically remove signals during track construction if the signals are in the way. Note that this can potentially lead to train crashes.
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT                     :Fast forward speed limit: {STRING}
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT_HELPTEXT            :Limit on how fast the game goes when fast forward is enabled. 0 = no limit (as fast as your computer allows). Values below 100% slow the game down. The upper-limit depends on the specification of your computer and can vary depending on the game.
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT_VAL                 :{NUM}% normal game speed
+STR_CONFIG_SETTING_FAST_FORWARD_SPEED_LIMIT_ZERO                :No limit (as fast as your computer allows)
 
 STR_CONFIG_SETTING_SOUND_TICKER                                 :News ticker: {STRING}
 STR_CONFIG_SETTING_SOUND_TICKER_HELPTEXT                        :Play sound for summarized news messages
@@ -1781,6 +1786,8 @@ STR_CONFIG_ERROR_INVALID_BASE_SOUNDS_NOT_FOUND                  :{WHITE}... igno
 STR_CONFIG_ERROR_INVALID_BASE_MUSIC_NOT_FOUND                   :{WHITE}... ignoring Base Music set '{STRING}': not found
 STR_CONFIG_ERROR_OUT_OF_MEMORY                                  :{WHITE}Out of memory
 STR_CONFIG_ERROR_SPRITECACHE_TOO_BIG                            :{WHITE}Allocating {BYTES} of spritecache failed. The spritecache was reduced to {BYTES}. This will reduce the performance of OpenTTD. To reduce memory requirements you can try to disable 32bpp graphics and/or zoom-in levels
+
+# Video initalization errors
 
 # Intro window
 STR_INTRO_CAPTION                                               :{WHITE}OpenTTD {REV}
@@ -3184,13 +3191,10 @@ STR_LOCAL_AUTHORITY_ACTION_TOOLTIP_BRIBE                        :{YELLOW}Bribe t
 STR_GOALS_CAPTION                                               :{WHITE}{COMPANY} Goals
 STR_GOALS_SPECTATOR_CAPTION                                     :{WHITE}Global Goals
 STR_GOALS_SPECTATOR                                             :Global Goals
-STR_GOALS_GLOBAL_TITLE                                          :{BLACK}Global goals:
 STR_GOALS_TEXT                                                  :{ORANGE}{STRING}
 STR_GOALS_NONE                                                  :{ORANGE}- None -
-STR_GOALS_SPECTATOR_NONE                                        :{ORANGE}- Not applicable -
 STR_GOALS_PROGRESS                                              :{ORANGE}{STRING}
 STR_GOALS_PROGRESS_COMPLETE                                     :{GREEN}{STRING}
-STR_GOALS_COMPANY_TITLE                                         :{BLACK}Company goals:
 STR_GOALS_TOOLTIP_CLICK_ON_SERVICE_TO_CENTER                    :{BLACK}Click on goal to center main view on industry/town/tile. Ctrl+Click opens a new viewport on industry/town/tile location
 
 # Goal question window
